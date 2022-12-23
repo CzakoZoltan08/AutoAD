@@ -3,6 +3,7 @@ import os
 import sys
 
 from autoad.data_generators.anomaly_type import AnomalyType
+from autoad.data_generators.dataset import Dataset
 from autoad.data_generators.gaussian_mixture_data_generator import \
     GaussianMixtureDataGenerator
 from autoad.data_generators.noise_type import NoiseType
@@ -130,7 +131,8 @@ class AnomalyDataGenerator():
 
         return X, y
 
-    def generate(self, datasset_name='6_cardio',
+    def generate(self,
+                 dataset: Dataset = Dataset.CARDIO,
                  anomaly_type: AnomalyType = AnomalyType.LOCAL,
                  noise_type: NoiseType = NoiseType.NONE,
                  labeled_anomaly_ratio: float = 1.0,
@@ -140,13 +142,13 @@ class AnomalyDataGenerator():
                  apply_data_scaling: bool = False,
                  scaler: TransformerMixin = MinMaxScaler()):
         data = np.load(os.path.join(os.path.dirname(__file__), 'datasets',
-                       datasset_name + '.npz'), allow_pickle=True)
+                       dataset + '.npz'), allow_pickle=True)
         X = data['X']
         y = data['y']
 
-        X, y = self._sub_sample(threshold, X, y)
         X, y = self._generate_data_by_anomaly_type(X, y, anomaly_type)
         X, y = self._add_noise(X, y, noise_type, noise_ratio)
+        X, y = self._sub_sample(threshold, X, y)
 
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, shuffle=True, stratify=y)

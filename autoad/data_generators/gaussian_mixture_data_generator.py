@@ -3,7 +3,6 @@ from autoad.data_generators.anomaly_type import AnomalyType
 
 from autoad.data_generators.data_generator import DataGenerator
 from sklearn.mixture import GaussianMixture
-from numpy import ndarray
 
 
 class GaussianMixtureDataGenerator(DataGenerator):
@@ -13,7 +12,7 @@ class GaussianMixtureDataGenerator(DataGenerator):
     def generate(self,
                  X,
                  normal_count: int = 1000,
-                 anomaly_count: int = 100) -> tuple[ndarray, ndarray]:
+                 anomaly_count: int = 100):
         metric_list = []
         n_components_list = list(np.arange(1, 10))
 

@@ -1,9 +1,16 @@
 import pytest
 
 from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
+from autoad.data_generators.dataset import Dataset
 from autoad.data_generators.noise_type import NoiseType
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+
+datasets = [Dataset.CARDIO,
+            Dataset.BREASTW,
+            Dataset.ANNTHYROID,
+            Dataset.BACKDOOR]
 
 
 @pytest.fixture
@@ -20,16 +27,22 @@ def test_anomaly_data_generator(anomaly_data_generator):
     assert len(data['y_test']) == 439
 
 
-def test_anomaly_data_generator_with_standard_scaler(anomaly_data_generator):
+@pytest.mark.parametrize("dataset", datasets)
+def test_anomaly_data_generator_with_standard_scaler(dataset,
+                                                     anomaly_data_generator):
     data = anomaly_data_generator.generate(
+        dataset=dataset,
         apply_data_scaling=True, scaler=StandardScaler())
 
     assert any(i > 1.0 for i in data['X_train'][:, 0]) is True
     assert any(i > 1.0 for i in data['X_test'][:, 0]) is True
 
 
-def test_anomaly_data_generator_with_minmax_scaler(anomaly_data_generator):
+@pytest.mark.parametrize("dataset", datasets)
+def test_anomaly_data_generator_with_minmax_scaler(dataset,
+                                                   anomaly_data_generator):
     data = anomaly_data_generator.generate(
+        dataset=dataset,
         apply_data_scaling=True, scaler=MinMaxScaler())
 
     assert max(data['X_train'][0]) <= 1
@@ -70,7 +83,9 @@ def test_anomaly_data_generator_with_label_ratio(anomaly_data_generator):
     assert len([x for x in data['y_train'] if x == 0]) == 1279
 
 
-def test_anomaly_data_generator_with_threshold(anomaly_data_generator):
-    data = anomaly_data_generator.generate(threshold=1000)
+@pytest.mark.parametrize("dataset", datasets)
+def test_anomaly_data_generator_with_threshold(dataset,
+                                               anomaly_data_generator):
+    data = anomaly_data_generator.generate(dataset=dataset, threshold=1000)
 
-    assert len(data['y_train'])+len(data['y_test']) <= 1010
+    assert len(data['y_train'])+len(data['y_test']) == 1000

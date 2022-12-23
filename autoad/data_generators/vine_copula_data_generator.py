@@ -4,7 +4,6 @@ import pandas as pd
 from autoad.data_generators.data_generator import DataGenerator
 from copulas.multivariate import VineCopula
 from copulas.univariate import GaussianUnivariate
-from numpy import ndarray
 
 
 class VineCopulaDataGenerator(DataGenerator):
@@ -13,7 +12,7 @@ class VineCopulaDataGenerator(DataGenerator):
 
     def generate(X,
                  normal_count: int = 1000,
-                 anomaly_count: int = 100) -> tuple[ndarray, ndarray]:
+                 anomaly_count: int = 100):
 
         if X.shape[1] > 50:
             idx = np.random.choice(np.arange(X.shape[1]), 50, replace=False)
