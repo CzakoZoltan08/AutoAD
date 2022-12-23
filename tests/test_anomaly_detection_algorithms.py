@@ -12,8 +12,6 @@ from sklearn.preprocessing import StandardScaler
 from pyod.utils.utility import precision_n_scores
 from sklearn.metrics import roc_auc_score
 
-import matplotlib.pyplot as plt
-
 
 @pytest.fixture
 def dataset():
@@ -88,11 +86,6 @@ def test_deep_autoencoding_gaussian_mixture_model(
     energy = deep_autoencoding_gaussian_mixture_model.predict(X_test)
 
     ano_index = np.arange(len(energy))[energy > np.percentile(energy, 75)]
-
-    plt.figure(figsize=[8, 3])
-    plt.plot(energy, "o-")
-    plt.xlabel("Index (row) of Sample")
-    plt.ylabel("Energy")
 
     y_pred = y_test.copy()
     for index in ano_index:

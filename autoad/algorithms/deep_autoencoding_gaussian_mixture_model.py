@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from autoad.algorithms.base_detector import BaseDetector
 
-from dagmm import DAGMM
+from autoad.algorithms.dagmm import DAGMM
 
 
 class DeepAutoencodingGaussianMixtureModel(BaseDetector):
