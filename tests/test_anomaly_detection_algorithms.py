@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 from autoad.algorithms.deep_autoencoding_gaussian_mixture_model \
     import DeepAutoencodingGaussianMixtureModel
+from autoad.algorithms.deeplog_model import DeepLogModel
 
 from autoad.algorithms.isolation_forest import IsolationForest
 from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
@@ -59,6 +60,11 @@ def isolation_forest_classifier(outliers_fraction, random_state):
 @pytest.fixture
 def deep_autoencoding_gaussian_mixture_model():
     return DeepAutoencodingGaussianMixtureModel()
+
+
+@pytest.fixture
+def deep_log_model():
+    return DeepLogModel()
 
 
 def test_isolation_forest(X_train,
