@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 from autoad.algorithms.deep_autoencoding_gaussian_mixture_model \
     import DeepAutoencodingGaussianMixtureModel
+from autoad.algorithms.deep_sad.deepsad import DeepSAD
 from autoad.algorithms.deeplog_model import DeepLogModel
 
 from autoad.algorithms.isolation_forest import IsolationForest
@@ -67,6 +68,11 @@ def deep_log_model():
     return DeepLogModel()
 
 
+@pytest.fixture
+def deep_sad_model():
+    return DeepSAD()
+
+
 def test_isolation_forest(X_train,
                           X_test,
                           y_test,
@@ -100,3 +106,19 @@ def test_deep_autoencoding_gaussian_mixture_model(
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
 
     assert roc > 0.5
+
+
+def test_deep_sad_model(X_train,
+                        X_test,
+                        y_train,
+                        y_test,
+                        deep_sad_model):
+    deep_sad_model.fit(X_train, y_train)
+
+    y_pred = deep_sad_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5

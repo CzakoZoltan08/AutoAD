@@ -3,8 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchtrain import Module
 
+from autoad.algorithms.base_detector import BaseDetector
 
-class DeepLog(Module):
+
+class DeepLog(Module, BaseDetector):
 
     def __init__(self, input_size, hidden_size, output_size, num_layers=2):
         """DeepLog model used for training and predicting logs.
@@ -42,7 +44,7 @@ class DeepLog(Module):
     #                       Forward through network                        #
     ########################################################################
 
-    def forward(self, X):
+    def fit(self, X):
         """Forward sample through DeepLog.
 
             Parameters

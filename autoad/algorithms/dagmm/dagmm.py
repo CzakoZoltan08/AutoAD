@@ -5,13 +5,14 @@ import joblib
 
 from os import makedirs
 from os.path import exists, join
+from autoad.algorithms.base_detector import BaseDetector
 
 from autoad.algorithms.dagmm.compression_net import CompressionNet
 from autoad.algorithms.dagmm.estimation_net import EstimationNet
 from autoad.algorithms.dagmm.gmm import GMM
 
 
-class DAGMM:
+class DAGMM(BaseDetector):
     """ Deep Autoencoding Gaussian Mixture Model.
 
     This implementation is based on the paper:
