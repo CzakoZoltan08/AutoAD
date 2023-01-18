@@ -1,18 +1,19 @@
-import pytest
-
-import numpy as np
+from sklearn.metrics import roc_auc_score
+from pyod.utils.utility import precision_n_scores
+from sklearn.preprocessing import StandardScaler
+from autoad.algorithms.fttransformer.fttransformer import FTTransformer
+from autoad.algorithms.ganomaly.ganomaly import GANomaly
+from autoad.algorithms.prenet.prenet import PReNet
+from autoad.algorithms.repen.repen import REPEN
+from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
+from autoad.algorithms.isolation_forest import IsolationForest
+from autoad.algorithms.feawad.feawad import FEAWAD
+from autoad.algorithms.deeplog_model import DeepLogModel
+from autoad.algorithms.deep_sad.deepsad import DeepSAD
 from autoad.algorithms.deep_autoencoding_gaussian_mixture_model \
     import DeepAutoencodingGaussianMixtureModel
-from autoad.algorithms.deep_sad.deepsad import DeepSAD
-from autoad.algorithms.deeplog_model import DeepLogModel
-
-from autoad.algorithms.isolation_forest import IsolationForest
-from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
-
-from sklearn.preprocessing import StandardScaler
-
-from pyod.utils.utility import precision_n_scores
-from sklearn.metrics import roc_auc_score
+import numpy as np
+import pytest
 
 
 @pytest.fixture
@@ -69,8 +70,33 @@ def deep_log_model():
 
 
 @pytest.fixture
+def feawad_model():
+    return FEAWAD()
+
+
+@pytest.fixture
 def deep_sad_model():
     return DeepSAD()
+
+
+@pytest.fixture
+def fttransformer_model():
+    return FTTransformer()
+
+
+@pytest.fixture
+def ganomaly_model():
+    return GANomaly()
+
+
+@pytest.fixture
+def prenet_model():
+    return PReNet()
+
+
+@pytest.fixture
+def repen_model():
+    return REPEN()
 
 
 def test_isolation_forest(X_train,
@@ -116,6 +142,84 @@ def test_deep_sad_model(X_train,
     deep_sad_model.fit(X_train, y_train)
 
     y_pred = deep_sad_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_feawad_model(X_train,
+                      X_test,
+                      y_train,
+                      y_test,
+                      feawad_model):
+    feawad_model.fit(X_train, y_train)
+
+    y_pred = feawad_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_fttransformer_model(X_train,
+                             X_test,
+                             y_train,
+                             y_test,
+                             fttransformer_model):
+    fttransformer_model.fit(X_train, y_train)
+
+    y_pred = fttransformer_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_ganomaly_model(X_train,
+                        X_test,
+                        y_train,
+                        y_test,
+                        ganomaly_model):
+    ganomaly_model.fit(X_train, y_train)
+
+    y_pred = ganomaly_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_prenet_model(X_train,
+                      X_test,
+                      y_train,
+                      y_test,
+                      prenet_model):
+    prenet_model.fit(X_train, y_train)
+
+    y_pred = prenet_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_repen_model(X_train,
+                     X_test,
+                     y_train,
+                     y_test,
+                     repen_model):
+    repen_model.fit(X_train, y_train)
+
+    y_pred = repen_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
     prn = round(precision_n_scores(y_test, y_pred), ndigits=4)

@@ -86,6 +86,6 @@ def test_anomaly_data_generator_with_label_ratio(anomaly_data_generator):
 @pytest.mark.parametrize("dataset", datasets)
 def test_anomaly_data_generator_with_threshold(dataset,
                                                anomaly_data_generator):
-    data = anomaly_data_generator.generate(dataset=dataset, threshold=1000)
+    data = anomaly_data_generator.generate(dataset=dataset, threshold=500)
 
-    assert len(data['y_train'])+len(data['y_test']) == 1000
+    assert len(data['y_train'])+len(data['y_test']) == 500
