@@ -3,6 +3,7 @@ from pyod.utils.utility import precision_n_scores
 from sklearn.preprocessing import StandardScaler
 from autoad.algorithms.fttransformer.fttransformer import FTTransformer
 from autoad.algorithms.ganomaly.ganomaly import GANomaly
+from autoad.algorithms.knn import KNearestNeighbors
 from autoad.algorithms.prenet.prenet import PReNet
 from autoad.algorithms.repen.repen import REPEN
 from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
@@ -60,6 +61,11 @@ def isolation_forest_classifier(outliers_fraction, random_state):
 
 
 @pytest.fixture
+def k_nearest_neighbors_classifier(outliers_fraction):
+    return KNearestNeighbors(contamination=outliers_fraction)
+
+
+@pytest.fixture
 def deep_autoencoding_gaussian_mixture_model():
     return DeepAutoencodingGaussianMixtureModel()
 
@@ -106,6 +112,21 @@ def test_isolation_forest(X_train,
     isolation_forest_classifier.fit(X_train)
 
     y_pred = isolation_forest_classifier.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_k_nearest_neighbors(X_train,
+                             X_test,
+                             y_test,
+                             k_nearest_neighbors_classifier):
+    k_nearest_neighbors_classifier.fit(X_train)
+
+    y_pred = k_nearest_neighbors_classifier.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
     prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
