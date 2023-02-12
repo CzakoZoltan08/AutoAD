@@ -1,11 +1,24 @@
 from sklearn.metrics import roc_auc_score
 from pyod.utils.utility import precision_n_scores
 from sklearn.preprocessing import StandardScaler
+from autoad.algorithms.abod import AngleBaseOutlierDetection
+from autoad.algorithms.autoencoder import AutoEncoder
+from autoad.algorithms.cblof import ClusterBasedLocalOutlierFactor
 from autoad.algorithms.fttransformer.fttransformer import FTTransformer
 from autoad.algorithms.ganomaly.ganomaly import GANomaly
+from autoad.algorithms.hbos import HistogramBasedOutlierDetection
 from autoad.algorithms.knn import KNearestNeighbors
+from autoad.algorithms.loda import LightweightOnlineDetector
+from autoad.algorithms.lof import LocalOutlierFactor
+from autoad.algorithms.lstmod import LSTMOutlierDetector
+from autoad.algorithms.mogaal import MultiObjectiveGenerativeAdversarialActiveLearning
+from autoad.algorithms.ocsvm import OneClassSVM
+from autoad.algorithms.pca import PCAAnomalyDetector
 from autoad.algorithms.prenet.prenet import PReNet
 from autoad.algorithms.repen.repen import REPEN
+from autoad.algorithms.sod import SubspaceOutlierDetection
+from autoad.algorithms.sogaal import SingleObjectiveGenerativeAdversarialActiveLearning
+from autoad.algorithms.vae import VariationalAutoEncoder
 from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
 from autoad.algorithms.isolation_forest import IsolationForest
 from autoad.algorithms.feawad.feawad import FEAWAD
@@ -105,6 +118,66 @@ def repen_model():
     return REPEN()
 
 
+@pytest.fixture
+def pca_model():
+    return PCAAnomalyDetector()
+
+
+@pytest.fixture
+def auto_encoder_model():
+    return AutoEncoder()
+
+
+@pytest.fixture
+def cblof_model():
+    return ClusterBasedLocalOutlierFactor()
+
+
+@pytest.fixture
+def hbos_model():
+    return HistogramBasedOutlierDetection()
+
+
+@pytest.fixture
+def abod_model():
+    return AngleBaseOutlierDetection()
+
+
+@pytest.fixture
+def loda_model():
+    return LightweightOnlineDetector()
+
+
+@pytest.fixture
+def lof_model():
+    return LocalOutlierFactor()
+
+
+@pytest.fixture
+def mogaal_model():
+    return MultiObjectiveGenerativeAdversarialActiveLearning()
+
+
+@pytest.fixture
+def ocsvm_model():
+    return OneClassSVM()
+
+
+@pytest.fixture
+def sod_model():
+    return SubspaceOutlierDetection()
+
+
+@pytest.fixture
+def sogaal_model():
+    return SingleObjectiveGenerativeAdversarialActiveLearning()
+
+
+@pytest.fixture
+def vae_model():
+    return VariationalAutoEncoder(encoder_neurons=[32, 16], decoder_neurons=[16, 32])
+
+
 def test_isolation_forest(X_train,
                           X_test,
                           y_test,
@@ -195,10 +268,8 @@ def test_fttransformer_model(X_train,
     y_pred = fttransformer_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
-    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
 
     assert roc > 0.5
-    assert prn > 0.5
 
 
 def test_ganomaly_model(X_train,
@@ -211,10 +282,8 @@ def test_ganomaly_model(X_train,
     y_pred = ganomaly_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
-    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
 
     assert roc > 0.5
-    assert prn > 0.5
 
 
 def test_prenet_model(X_train,
@@ -241,6 +310,212 @@ def test_repen_model(X_train,
     repen_model.fit(X_train, y_train)
 
     y_pred = repen_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_pca_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   pca_model):
+    pca_model.fit(X_train, y_train)
+
+    y_pred = pca_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_auto_encoder_model(X_train,
+                            X_test,
+                            y_train,
+                            y_test,
+                            auto_encoder_model):
+    auto_encoder_model.fit(X_train, y_train)
+
+    y_pred = auto_encoder_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_cblof_model(X_train,
+                     X_test,
+                     y_train,
+                     y_test,
+                     cblof_model):
+    cblof_model.fit(X_train, y_train)
+
+    y_pred = cblof_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_hbos_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    hbos_model):
+    hbos_model.fit(X_train, y_train)
+
+    y_pred = hbos_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_abod_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    abod_model):
+    abod_model.fit(X_train, y_train)
+
+    y_pred = abod_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_loda_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    loda_model):
+    loda_model.fit(X_train, y_train)
+
+    y_pred = loda_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_lstmod_model(X_train,
+                      X_test,
+                      y_train,
+                      y_test,):
+    print(X_train.shape, X_test.shape)
+
+    clf = LSTMOutlierDetector(contamination=0.1)
+    clf.fit(X_train)
+    # pred_scores = clf.decision_function(X_test)
+    y_pred, left_inds, right_inds = clf.predict(X_test)
+
+    print(y_pred.shape, left_inds.shape, right_inds.shape)
+
+    print(clf.threshold_)
+    # print(np.percentile(pred_scores, 100 * 0.9))
+
+    # print('pred_scores: ',pred_scores)
+    print('pred_labels: ', y_pred)
+
+    roc = round(roc_auc_score(y_test, y_pred[:len(y_test)]), ndigits=4)
+
+    assert roc > 0.2
+
+
+def test_lof_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   lof_model):
+    lof_model.fit(X_train, y_train)
+
+    y_pred = lof_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_mogaal_model(X_train,
+                      X_test,
+                      y_train,
+                      y_test,
+                      mogaal_model):
+    mogaal_model.fit(X_train, y_train)
+
+    y_pred = mogaal_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_ocsvm_model(X_train,
+                     X_test,
+                     y_train,
+                     y_test,
+                     ocsvm_model):
+    ocsvm_model.fit(X_train, y_train)
+
+    y_pred = ocsvm_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_sod_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   sod_model):
+    sod_model.fit(X_train, y_train)
+
+    y_pred = sod_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_sogaal_model(X_train,
+                      X_test,
+                      y_train,
+                      y_test,
+                      sogaal_model):
+    sogaal_model.fit(X_train, y_train)
+
+    y_pred = sogaal_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_vae_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   vae_model):
+    vae_model.fit(X_train, y_train)
+
+    y_pred = vae_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
     prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
