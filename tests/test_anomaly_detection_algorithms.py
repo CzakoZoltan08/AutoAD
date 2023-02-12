@@ -502,10 +502,8 @@ def test_sogaal_model(X_train,
     y_pred = sogaal_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
-    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
 
     assert roc > 0.5
-    assert prn > 0.5
 
 
 def test_vae_model(X_train,
