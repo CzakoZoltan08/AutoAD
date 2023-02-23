@@ -8,6 +8,10 @@ Created on Tue Apr 23 12:35:38 2019
 import AutomaticAI.FEAWADAlgorithmFactory as FEAWADaf
 import AutomaticAI.PReNetAlgorithmFactory as prenetaf
 import AutomaticAI.DeepSADAlgorithmFactory as dsadaf
+import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
+import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
+import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
+import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
 import AutomaticAI.BayesianRidgeRegressionAlgorithmFactory as brraf
 import AutomaticAI.PassiveAgressiveRegressionAlgorithmFactory as paraf
 import AutomaticAI.OrthogonalMatchingPursuitRegressionAlgorthmFactory as ompraf
@@ -114,9 +118,11 @@ adaptive_regression_algorithms = []
 anomaly_detection_semisupervised_algorithms = [
     dsadaf.get_algorithm(),
     prenetaf.get_algorithm(),
-    # devnetaf.get_algorithm(),
-    # ganomalyaf.get_algorithm(),
+    ganomalyaf.get_algorithm(),
     FEAWADaf.get_algorithm(),
+    abodaf.get_algorithm(),
+    coblofaf.get_algorithm(),
+    hbodaf.get_algorithm(),
     # XGBODaf.get_algorithm(),
 ]
 

@@ -11,7 +11,7 @@ class DeepLogModel(BaseDetector):
             output_size=300)
 
     def fit(self, X, y=None):
-        self.detector_.fit(X, y, epochs=10, batch_size=128)
+        self.detector_.fit(X)
 
     def predict(self, X):
         return self.detector_.predict(X)

@@ -7,7 +7,7 @@ Created on Fri Apr 26 20:00:57 2019
 
 from collections import OrderedDict
 
-from sklearn.tree import DecisionTreeRegressor 
+from sklearn.tree import DecisionTreeRegressor
 
 from AutomaticAI.Algorithm import Algorithm
 
@@ -19,12 +19,14 @@ const_param = {
 
 dicrete_hyper_parameter_list_of_criterion = ["mse", "friedman_mse", "mae"]
 dicrete_hyper_parameter_list_of_splitter = ["best", "random"]
-dicrete_hyper_parameter_list_of_min_samples_split  = range(1,240)
-dicrete_hyper_parameter_list_of_min_samples_leaf = range(1,240)
-dicrete_hyper_parameter_list_of_min_samples_leaf = range(1,240)
+dicrete_hyper_parameter_list_of_min_samples_split = range(1, 240)
+dicrete_hyper_parameter_list_of_min_samples_leaf = range(1, 240)
+dicrete_hyper_parameter_list_of_min_samples_leaf = range(1, 240)
 
-continuous_hyper_parameter_mapping_index_key_mapping = ["min_impurity_decrease"]
-discrete_hyper_parameter_mapping = ["min_samples_split", "min_samples_leaf", "splitter", "criterion"]
+continuous_hyper_parameter_mapping_index_key_mapping = [
+    "min_impurity_decrease"]
+discrete_hyper_parameter_mapping = [
+    "min_samples_split", "min_samples_leaf", "splitter", "criterion"]
 
 discrete_parameter_dict = OrderedDict()
 discrete_parameter_dict["min_samples_split"] = dicrete_hyper_parameter_list_of_min_samples_split
@@ -42,7 +44,8 @@ param_dict['criterion'] = 'mse'
 param_dict['splitter'] = 'best'
 
 
-bounds=[(1.001,50.99),(1.001,199.99),(1.001,199.99),(0.001,1.99),(0.001,2.99)]
+bounds = [(1.001, 50.99), (1.001, 199.99),
+          (1.001, 199.99), (0.001, 1.99), (0.001, 2.99)]
 
 
 def get_algorithm():

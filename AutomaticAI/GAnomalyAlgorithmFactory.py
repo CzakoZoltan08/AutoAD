@@ -1,42 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 29 22:55:20 2019
+Created on Tue Apr 30 18:25:21 2019
 
 @author: Zoltan
 """
-
+from AutomaticAI.Algorithm import Algorithm
 from collections import OrderedDict
 
-from sklearn.ensemble import BaggingClassifier
-
-from AutomaticAI.Algorithm import Algorithm
+from autoad.algorithms.ganomaly.ganomaly import GANomaly
 
 
-const_param = {
-}
+const_param = {}
 
-dicrete_hyper_parameter_list_of_n_estimators = range(1, 2100)
-
-continuous_hyper_parameter_mapping_index_key_mapping = [
-    "max_samples", "max_features"]
-discrete_hyper_parameter_mapping = ["n_estimators"]
+continuous_hyper_parameter_mapping_index_key_mapping = ["lr", "mom"]
+discrete_hyper_parameter_mapping = []
 
 discrete_parameter_dict = OrderedDict()
-discrete_parameter_dict["n_estimators"] = dicrete_hyper_parameter_list_of_n_estimators
+
 parameter_constraint_dict = OrderedDict()
 
 # dictionary of parameters
 param_dict = OrderedDict()
-param_dict['n_estimators'] = 50
-param_dict['max_samples'] = 0.1
-param_dict['max_features'] = 0.1
+param_dict['lr'] = 0.01
+param_dict['mom'] = 0.7
 
-bounds = [(0.1, 0.19), (0.1, 0.19), (0.001, 1999.99)]
+bounds = [(0.0000001, 9.99), (0.001, 0.99)]
 
 
 def get_algorithm():
-    return Algorithm(algorithm_type=BaggingClassifier,
-                     algorithm_name="BAGGING CLASSIFIER",
+    return Algorithm(algorithm_type=GANomaly,
+                     algorithm_name="GANomaly",
                      hyper_parameter_dict=param_dict,
                      discrete_hyper_parameter_dict=discrete_parameter_dict,
                      discrete_hyper_parameter_mapping=discrete_hyper_parameter_mapping,
