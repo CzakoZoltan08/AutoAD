@@ -12,13 +12,16 @@ class DeepSAD(BaseDetector):
                  n_epochs=50,
                  optimizer_name='adam',
                  weight_decay=1e-6,
+                 eta=1.0,
+                 eps: float = 1e-6,
                  num_threads=0):
         self.seed = 42
         self.net_name = 'dense'
         self.xp_path = None
         self.load_config = None
         self.load_model = None
-        self.eta = 1.0  # eta in the loss function
+        self.eta = eta  # eta in the loss function
+        self.eps = eps
         self.optimizer_name = optimizer_name
         self.lr = lr
         self.n_epochs = n_epochs
@@ -45,7 +48,12 @@ class DeepSAD(BaseDetector):
         dataset = ODDSADDataset(data=data, train=True)
         input_size = dataset.train_set.data.size(1)  # input size
 
-        self.deepSAD = DeepSADModel(input_size=input_size)
+        self.deepSAD = DeepSADModel(
+            input_size=input_size,
+            eta=self.eta,
+            eps=self.eps,
+            optimizer_name=self.optimizer_name
+        )
 
         if self.pretrain:
             self.deepSAD.pretrain(dataset, input_size=input_size)

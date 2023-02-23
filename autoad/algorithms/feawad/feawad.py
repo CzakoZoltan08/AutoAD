@@ -34,6 +34,8 @@ disable_eager_execution()
 class FEAWAD(BaseDetector):
     def __init__(self,
                  network_depth=2,
+                 cont_rate=0.02,
+                 known_outliers=15,
                  model_name='FEAWAD',
                  save_suffix='test'):
         self.device = self._get_device()  # get device
@@ -44,8 +46,8 @@ class FEAWAD(BaseDetector):
         self.nb_batch = 20
         self.epochs = 50
         self.runs = 15
-        self.known_outliers = 15
-        self.cont_rate = 0.02
+        self.known_outliers = known_outliers
+        self.cont_rate = cont_rate
         self.input_path = './dataset/'
         self.data_set = 'nslkdd_normalization'
         self.data_format = '0'

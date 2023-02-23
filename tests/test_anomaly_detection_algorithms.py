@@ -520,3 +520,22 @@ def test_vae_model(X_train,
 
     assert roc > 0.5
     assert prn > 0.5
+
+
+def test_adone_model(X_train,
+                     X_test,
+                     y_train,
+                     y_test):
+    from pygod.models import AdONE
+
+    adone_model = AdONE()
+
+    adone_model.fit(X_train)
+
+    y_pred = adone_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5

@@ -14,14 +14,15 @@ class DeepSADModel(BaseDetector):
     def __init__(self,
                  input_size,
                  optimizer_name: str = 'adam',
-                 eta: float = 1.0):
+                 eta: float = 1.0,
+                 eps: float = 1e-6):
         self.optimizer_name = optimizer_name
         self.net = MLP(x_dim=input_size, h_dims=[
             100, 20], rep_dim=10, bias=False)
         self.device = self._get_device()
         self.net = self.net.to(self.device)
         self.eta = eta
-        self.eps = 1e-6
+        self.eps = eps
 
     def _get_device(self, gpu_specific=False):
         if gpu_specific:
