@@ -11,7 +11,7 @@ from autoad.algorithms.hbos import HistogramBasedOutlierDetection
 
 const_param = {}
 
-dicrete_hyper_parameter_list_of_n_bins = range(1, 100)
+dicrete_hyper_parameter_list_of_n_bins = range(3, 100)
 
 continuous_hyper_parameter_mapping_index_key_mapping = [
     "contamination", "alpha", "tol"]
