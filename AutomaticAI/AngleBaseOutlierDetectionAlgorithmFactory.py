@@ -16,7 +16,7 @@ continuous_hyper_parameter_mapping_index_key_mapping = []
 discrete_hyper_parameter_mapping = ["n_neighbors"]
 
 discrete_parameter_dict = OrderedDict()
-discrete_parameter_dict["n_neighbors"] = range(0, 30)
+discrete_parameter_dict["n_neighbors"] = range(1, 30)
 
 parameter_constraint_dict = OrderedDict()
 
