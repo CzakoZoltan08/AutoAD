@@ -29,7 +29,7 @@ param_dict = OrderedDict()
 param_dict['contamination'] = 0.1
 param_dict['alpha'] = 0.1
 
-bounds = [(0.001, 0.4999), (0.0000001, 0.99), (1, 98), (1, 2)]
+bounds = [(0.001, 0.4999), (0.0000001, 0.99), (1, 98), (1.001, 1.9)]
 
 
 def get_algorithm():
