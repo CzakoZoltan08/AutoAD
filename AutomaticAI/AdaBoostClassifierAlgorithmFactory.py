@@ -7,7 +7,7 @@ Created on Mon Apr 29 22:06:12 2019
 
 from collections import OrderedDict
 
-from sklearn.ensemble import AdaBoostClassifier 
+from sklearn.ensemble import AdaBoostClassifier
 
 from AutomaticAI.Algorithm import Algorithm
 
@@ -16,7 +16,7 @@ const_param = {
 }
 
 dicrete_hyper_parameter_list_of_algorithm = ["SAMME", "SAMME.R"]
-dicrete_hyper_parameter_list_of_n_estimators = range(1,2100)
+dicrete_hyper_parameter_list_of_n_estimators = range(1, 200)
 
 continuous_hyper_parameter_mapping_index_key_mapping = ["learning_rate"]
 discrete_hyper_parameter_mapping = ["n_estimators", "algorithm"]
@@ -32,7 +32,7 @@ param_dict['n_estimators'] = 50
 param_dict['algorithm'] = "SAMME"
 param_dict['learning_rate'] = 1.0
 
-bounds=[(0.001,100.99),(0.001,1999.99),(0.001,1.99)]
+bounds = [(0.001, 100.99), (0.001, 100.99), (0.001, 1.99)]
 
 
 def get_algorithm():

@@ -1,42 +1,38 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 29 21:54:44 2019
+Created on Tue Apr 30 18:25:21 2019
 
 @author: Zoltan
 """
-
+from AutomaticAI.Algorithm import Algorithm
 from collections import OrderedDict
 
-from sklearn.linear_model import PassiveAggressiveClassifier
+from autoad.algorithms.isolation_forest import IsolationForest
 
-from AutomaticAI.Algorithm import Algorithm
+const_param = {}
 
+dicrete_hyper_parameter_list_of_n_estimators = range(1, 200)
 
-const_param = {
-    'n_jobs': -1
-}
-
-dicrete_hyper_parameter_list_of_intercept = [True, False]
-
-continuous_hyper_parameter_mapping_index_key_mapping = ["C"]
-discrete_hyper_parameter_mapping = ["fit_intercept"]
+continuous_hyper_parameter_mapping_index_key_mapping = [
+    "contamination", "max_features"]
+discrete_hyper_parameter_mapping = []
+discrete_hyper_parameter_mapping = ["n_estimators"]
 
 discrete_parameter_dict = OrderedDict()
-discrete_parameter_dict["fit_intercept"] = dicrete_hyper_parameter_list_of_intercept
+discrete_parameter_dict["n_estimators"] = dicrete_hyper_parameter_list_of_n_estimators
 parameter_constraint_dict = OrderedDict()
 
 # dictionary of parameters
 param_dict = OrderedDict()
-param_dict['fit_intercept'] = True
-param_dict['C'] = 0.1
+param_dict['contamination'] = 0.1
+param_dict['max_features'] = 1.0
 
-
-bounds = [(0.001, 100.99), (0.001, 1.99)]
+bounds = [(0.001, 0.4999), (0.1, 1.0), (1, 198)]
 
 
 def get_algorithm():
-    return Algorithm(algorithm_type=PassiveAggressiveClassifier,
-                     algorithm_name="PASSIVE AGRESSIVE CLASSIFIER",
+    return Algorithm(algorithm_type=IsolationForest,
+                     algorithm_name="IsolationForest",
                      hyper_parameter_dict=param_dict,
                      discrete_hyper_parameter_dict=discrete_parameter_dict,
                      discrete_hyper_parameter_mapping=discrete_hyper_parameter_mapping,

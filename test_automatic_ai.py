@@ -37,22 +37,37 @@ def main():
     num_particles = 2
     num_iterations = 2
 
-    pso = pso_algorithm.PSO(particle_count=num_particles, is_semisupervised=True,
-                            distance_between_initial_particles=0.7, evaluation_metric=roc_auc_score)
+    pso_semi_supervised = pso_algorithm.PSO(particle_count=num_particles, is_semisupervised=True,
+                                            distance_between_initial_particles=0.7, evaluation_metric=roc_auc_score)
+
+    pso_supervised = pso_algorithm.PSO(particle_count=num_particles, is_semisupervised=False,
+                                       distance_between_initial_particles=0.7, evaluation_metric=roc_auc_score)
 
     start_time = time.time()
 
-    best_results = pso.fit(X_train=x_train,
-                           X_test=x_test,
-                           Y_train=y_train,
-                           Y_test=y_test,
-                           maxiter=num_iterations,
-                           verbose=True,
-                           compare_models=True,
-                           max_distance=0.05,
-                           agents=1)
+    best_results_supervised = pso_supervised.fit(X_train=x_train,
+                                                 X_test=x_test,
+                                                 Y_train=y_train,
+                                                 Y_test=y_test,
+                                                 maxiter=num_iterations,
+                                                 verbose=True,
+                                                 compare_models=True,
+                                                 max_distance=0.05,
+                                                 agents=1)
+
+    best_results_semi_supervised = pso_semi_supervised.fit(X_train=x_train,
+                                                           X_test=x_test,
+                                                           Y_train=y_train,
+                                                           Y_test=y_test,
+                                                           maxiter=num_iterations,
+                                                           verbose=True,
+                                                           compare_models=True,
+                                                           max_distance=0.05,
+                                                           agents=1)
 
     print("--- %s seconds ---" % (time.time() - start_time))
+
+    best_results = {**best_results_semi_supervised, **best_results_supervised}
 
     print("##########################################")
 

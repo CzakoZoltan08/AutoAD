@@ -12,6 +12,17 @@ import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
 import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
 import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
 import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
+import AutomaticAI.IsolationForestAlgorithmFactory as ifaf
+import AutomaticAI.SemiSupervisedKNNAlgorithmFactory as ssknnaf
+import AutomaticAI.LightweightOnlineDetectorAlgorithmFactory as lodaaf
+import AutomaticAI.LocalOutlierFactorAlgorithmFactory as lofaf
+import AutomaticAI.LSTMOutlierDetectorAlgorithmFactory as lstmdaaf
+import AutomaticAI.MultiObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as mogaalaf
+import AutomaticAI.OneClassSVMAlgorithmFactory as ocsvmaf
+import AutomaticAI.PCAAnomalyDetectorAlgorithmFactory as pcaadaf
+import AutomaticAI.SubspaceOutlierDetectionAlgorithmFactory as sodaf
+import AutomaticAI.SingleObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as sogaalaf
+import AutomaticAI.VariationalAutoEncoderAlgorithmFactory as vaeaf
 import AutomaticAI.BayesianRidgeRegressionAlgorithmFactory as brraf
 import AutomaticAI.PassiveAgressiveRegressionAlgorithmFactory as paraf
 import AutomaticAI.OrthogonalMatchingPursuitRegressionAlgorthmFactory as ompraf
@@ -34,11 +45,16 @@ import AutomaticAI.DecisionTreeClassifierAlgorithmFactory as dtcaf
 import AutomaticAI.ExtraTreeClassifierAlgorithmFactory as etcaf
 import AutomaticAI.RandomForestAlgorithmFactory as rfaf
 import AutomaticAI.KnnAlgorithmFactory as kaf
+import AutomaticAI.RidgeClassifierAlgorithmFactory as rcaf
+# import AutomaticAI.AdaBoostClassifierAlgorithmFactory as abcaf
+import AutomaticAI.GradientBoostingClassifierAlgorithmFactory as gbcaf
+import AutomaticAI.XGBoostClassifierAlgorithmFactory as xgbcaf
 from scipy.spatial import distance as dc
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import r2_score
 from sklearn.metrics import accuracy_score
 import numpy as np
+import math
 import sys
 sys.path.append('C:/University/Git/AutomaticAI_Flask')
 
@@ -72,13 +88,13 @@ classification_algorithms = [  # lrcaf.get_algorithm(),
     rfaf.get_algorithm(),
     etcaf.get_algorithm(),
     dtcaf.get_algorithm(),
-    # rcaf.get_algorithm(),
+    rcaf.get_algorithm(),
     pacaf.get_algorithm(),
     # abcaf.get_algorithm(),
-    # gbcaf.get_algorithm(),
+    gbcaf.get_algorithm(),
     sgdcaf.get_algorithm(),
     etscaf.get_algorithm(),
-    # xgbcaf.get_algorithm(),
+    xgbcaf.get_algorithm(),
 ]
 
 adaptive_classification_algorithms = [  # arfcaf.get_algorithm(),
@@ -123,7 +139,17 @@ anomaly_detection_semisupervised_algorithms = [
     abodaf.get_algorithm(),
     coblofaf.get_algorithm(),
     hbodaf.get_algorithm(),
-    # XGBODaf.get_algorithm(),
+    ifaf.get_algorithm(),
+    ssknnaf.get_algorithm(),
+    lodaaf.get_algorithm(),
+    lofaf.get_algorithm(),
+    lstmdaaf.get_algorithm(),
+    mogaalaf.get_algorithm(),
+    ocsvmaf.get_algorithm(),
+    pcaadaf.get_algorithm(),
+    sodaf.get_algorithm(),
+    sogaalaf.get_algorithm(),
+    vaeaf.get_algorithm(),
 ]
 
 anomaly_detection_supervised_algorithms = []
@@ -214,13 +240,23 @@ def train_algorithm(curr_params, param, Xtrain, Xvalid, Ytrain, Yvalid, algorith
     return model, metric_val
 
 
+def hasnan(array): return len([x for x in array if math.isnan(x)]) > 0
+
+
 def train_semisupervised_algorithm(curr_params, param, Xtrain, Xvalid, Ytrain, Yvalid, algorithm, metric=roc_auc_score):
     params_copy = param.copy()
     params_copy.update(curr_params)
     model = algorithm(**params_copy)
     model.fit(Xtrain, Ytrain)
     preds = model.predict(Xvalid)
-    metric_val = metric(Yvalid, preds)
+
+    try:
+        if hasnan(preds):
+            metric_val = 0.0
+        else:
+            metric_val = metric(Yvalid, preds)
+    except Exception:
+        metric_val = metric(Yvalid, preds[0][:len(Yvalid)], multi_class='ovr')
 
     return model, metric_val
 

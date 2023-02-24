@@ -15,12 +15,12 @@ from AutomaticAI.Algorithm import Algorithm
 const_param = {
 }
 
-dicrete_hyper_parameter_list_of_n_estimators = range(1,320)
-dicrete_hyper_parameter_list_of_min_child_weight = range(1,320)
-dicrete_hyper_parameter_list_of_max_delta_step = range(1,320)
-dicrete_hyper_parameter_list_of_max_depth = range(1,320)
+dicrete_hyper_parameter_list_of_n_estimators = range(1, 320)
+dicrete_hyper_parameter_list_of_min_child_weight = range(1, 320)
+dicrete_hyper_parameter_list_of_max_delta_step = range(1, 320)
+dicrete_hyper_parameter_list_of_max_depth = range(1, 320)
 
-continuous_hyper_parameter_mapping_index_key_mapping = ["gamma", 
+continuous_hyper_parameter_mapping_index_key_mapping = ["gamma",
                                                         "subsample"
                                                         "colsample_bytree",
                                                         "colsample_bylevel",
@@ -28,9 +28,9 @@ continuous_hyper_parameter_mapping_index_key_mapping = ["gamma",
                                                         "reg_alpha",
                                                         "reg_lambda",
                                                         "scale_pos_weigh"]
-discrete_hyper_parameter_mapping = ["min_child_weight", 
-                                    "max_delta_step", 
-                                    "n_estimators", 
+discrete_hyper_parameter_mapping = ["min_child_weight",
+                                    "max_delta_step",
+                                    "n_estimators",
                                     "max_depth"]
 
 discrete_parameter_dict = OrderedDict()
@@ -56,8 +56,8 @@ param_dict['min_child_weight'] = 10
 param_dict['max_delta_step'] = 10
 param_dict['max_depth'] = 100
 
-bounds=[(0.001,10.99),(0.001,10.99),(0.0,1.0),(0.0,1.0),(0.001,10.99),(0.0,1.0),(0.001,10.99),(0.001,10.99),
-        (1.001,299.99),(1.001,299.99),(1.001,299.99),(1.001,299.99)]
+bounds = [(0.001, 10.99), (0.001, 10.99), (0.0, 1.0), (0.0, 1.0), (0.001, 10.99), (0.0, 1.0), (0.001, 10.99),
+          (0.001, 10.99), (1.001, 299.99), (1.001, 299.99), (1.001, 299.99), (1.001, 299.99)]
 
 
 def get_algorithm():

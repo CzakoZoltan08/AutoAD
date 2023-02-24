@@ -7,32 +7,38 @@ Created on Tue Apr 30 18:25:21 2019
 from AutomaticAI.Algorithm import Algorithm
 from collections import OrderedDict
 
-from autoad.algorithms.cblof import ClusterBasedLocalOutlierFactor
+from autoad.algorithms.ocsvm import OneClassSVM
 
 const_param = {}
 
-dicrete_hyper_parameter_list_of_n_clusters = range(5, 100)
-dicrete_hyper_parameter_list_of_beta = range(1, 100)
+dicrete_hyper_parameter_list_of_kernel = [
+    'linear', 'poly', 'rbf', 'sigmoid', 'precomputed']
+dicrete_hyper_parameter_list_of_degree = range(1, 100)
 
-continuous_hyper_parameter_mapping_index_key_mapping = ["alpha"]
+continuous_hyper_parameter_mapping_index_key_mapping = [
+    "contamination", "coef0", "tol", "nu"]
 discrete_hyper_parameter_mapping = []
-discrete_hyper_parameter_mapping = ["n_clusters", "beta"]
+discrete_hyper_parameter_mapping = ["kernel", "degree"]
 
 discrete_parameter_dict = OrderedDict()
-discrete_parameter_dict["n_clusters"] = dicrete_hyper_parameter_list_of_n_clusters
-discrete_parameter_dict["beta"] = dicrete_hyper_parameter_list_of_beta
+discrete_parameter_dict["kernel"] = dicrete_hyper_parameter_list_of_kernel
+discrete_parameter_dict["degree"] = dicrete_hyper_parameter_list_of_degree
 parameter_constraint_dict = OrderedDict()
 
 # dictionary of parameters
 param_dict = OrderedDict()
-param_dict['alpha'] = 0.02
+param_dict['contamination'] = 0.1
+param_dict['coef0'] = 0.0
+param_dict['tol'] = 1e-3
+param_dict['nu'] = 0.5
 
-bounds = [(0.00001, 1.0), (5.0000001, 48.99), (1, 98.99)]
+bounds = [(0.001, 0.4999), (0.0000001, 2.99), (0.0000001, 2.99),
+          (0.0000001, 0.99), (0.0, 3.999), (1.0, 90.0)]
 
 
 def get_algorithm():
-    return Algorithm(algorithm_type=ClusterBasedLocalOutlierFactor,
-                     algorithm_name="ClusterBasedLocalOutlierFactor",
+    return Algorithm(algorithm_type=OneClassSVM,
+                     algorithm_name="OneClassSVM",
                      hyper_parameter_dict=param_dict,
                      discrete_hyper_parameter_dict=discrete_parameter_dict,
                      discrete_hyper_parameter_mapping=discrete_hyper_parameter_mapping,

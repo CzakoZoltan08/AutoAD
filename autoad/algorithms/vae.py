@@ -12,7 +12,8 @@ class VariationalAutoEncoder(BaseDetector):
                  latent_dim=2,
                  hidden_activation='relu',
                  output_activation='sigmoid',
-                 loss=mse, optimizer='adam',
+                 loss=mse,
+                 optimizer='adam',
                  epochs=100,
                  batch_size=32,
                  dropout_rate=0.2,
@@ -24,7 +25,8 @@ class VariationalAutoEncoder(BaseDetector):
                  contamination=0.1,
                  gamma=1.0,
                  capacity=0.0):
-        super(VariationalAutoEncoder, self).__init__(contamination=contamination)
+        super(VariationalAutoEncoder, self).__init__(
+            contamination=contamination)
         self.encoder_neurons = encoder_neurons
         self.decoder_neurons = decoder_neurons
         self.hidden_activation = hidden_activation

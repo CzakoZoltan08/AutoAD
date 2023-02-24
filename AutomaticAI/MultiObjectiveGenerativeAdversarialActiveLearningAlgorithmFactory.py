@@ -7,32 +7,34 @@ Created on Tue Apr 30 18:25:21 2019
 from AutomaticAI.Algorithm import Algorithm
 from collections import OrderedDict
 
-from autoad.algorithms.cblof import ClusterBasedLocalOutlierFactor
+from autoad.algorithms.mogaal import MultiObjectiveGenerativeAdversarialActiveLearning
 
 const_param = {}
 
-dicrete_hyper_parameter_list_of_n_clusters = range(5, 100)
-dicrete_hyper_parameter_list_of_beta = range(1, 100)
+dicrete_hyper_parameter_list_of_k = range(3, 200)
 
-continuous_hyper_parameter_mapping_index_key_mapping = ["alpha"]
-discrete_hyper_parameter_mapping = []
-discrete_hyper_parameter_mapping = ["n_clusters", "beta"]
+continuous_hyper_parameter_mapping_index_key_mapping = [
+    "contamination", "lr_d", "lr_g", "momentum"]
+discrete_hyper_parameter_mapping = ["k"]
 
 discrete_parameter_dict = OrderedDict()
-discrete_parameter_dict["n_clusters"] = dicrete_hyper_parameter_list_of_n_clusters
-discrete_parameter_dict["beta"] = dicrete_hyper_parameter_list_of_beta
+discrete_parameter_dict["k"] = dicrete_hyper_parameter_list_of_k
 parameter_constraint_dict = OrderedDict()
 
 # dictionary of parameters
 param_dict = OrderedDict()
-param_dict['alpha'] = 0.02
+param_dict['contamination'] = 0.1
+param_dict['lr_d'] = 0.01
+param_dict['lr_g'] = 0.0001
+param_dict['momentum'] = 0.9
 
-bounds = [(0.00001, 1.0), (5.0000001, 48.99), (1, 98.99)]
+bounds = [(0.001, 0.4999), (0.0000001, 0.99),
+          (0.0000001, 0.99), (0.0, 1.0), (1.0, 10.0)]
 
 
 def get_algorithm():
-    return Algorithm(algorithm_type=ClusterBasedLocalOutlierFactor,
-                     algorithm_name="ClusterBasedLocalOutlierFactor",
+    return Algorithm(algorithm_type=MultiObjectiveGenerativeAdversarialActiveLearning,
+                     algorithm_name="MultiObjectiveGenerativeAdversarialActiveLearning",
                      hyper_parameter_dict=param_dict,
                      discrete_hyper_parameter_dict=discrete_parameter_dict,
                      discrete_hyper_parameter_mapping=discrete_hyper_parameter_mapping,

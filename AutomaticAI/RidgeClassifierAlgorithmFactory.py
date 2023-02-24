@@ -7,7 +7,7 @@ Created on Mon Apr 29 21:38:49 2019
 
 from collections import OrderedDict
 
-from sklearn.linear_model import RidgeClassifier 
+from sklearn.linear_model import RidgeClassifier
 
 from AutomaticAI.Algorithm import Algorithm
 
@@ -19,7 +19,8 @@ const_param = {
 
 dicrete_hyper_parameter_list_of_intercept = [True, False]
 dicrete_hyper_parameter_list_of_normalize = [True, False]
-dicrete_hyper_parameter_list_of_solver = ["auto", "svd", "cholesky", "sparse_cg", "lsqr", "sag"]
+dicrete_hyper_parameter_list_of_solver = [
+    "auto", "svd", "cholesky", "sparse_cg", "lsqr", "sag"]
 
 continuous_hyper_parameter_mapping_index_key_mapping = ["alpha", "tol"]
 discrete_hyper_parameter_mapping = ["normalize", "fit_intercept", "solver"]
@@ -38,7 +39,8 @@ param_dict['alpha'] = 0.1
 param_dict['tol'] = 0.1
 
 
-bounds=[(0.001,100.99),(0.001,100.99),(0.001,1.99),(0.001,1.99),(0.001, 5.99)]
+bounds = [(0.001, 100.99), (0.001, 100.99),
+          (0.001, 1.99), (0.001, 1.99), (0.001, 5.99)]
 
 
 def get_algorithm():
