@@ -5,24 +5,30 @@ Created on Tue Apr 23 12:35:38 2019
 @author: czzo
 """
 
-import AutomaticAI.FEAWADAlgorithmFactory as FEAWADaf
-import AutomaticAI.PReNetAlgorithmFactory as prenetaf
-import AutomaticAI.DeepSADAlgorithmFactory as dsadaf
-import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
-import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
-import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
-import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
-import AutomaticAI.IsolationForestAlgorithmFactory as ifaf
-import AutomaticAI.SemiSupervisedKNNAlgorithmFactory as ssknnaf
-import AutomaticAI.LightweightOnlineDetectorAlgorithmFactory as lodaaf
-import AutomaticAI.LocalOutlierFactorAlgorithmFactory as lofaf
-import AutomaticAI.LSTMOutlierDetectorAlgorithmFactory as lstmdaaf
-import AutomaticAI.MultiObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as mogaalaf
-import AutomaticAI.OneClassSVMAlgorithmFactory as ocsvmaf
-import AutomaticAI.PCAAnomalyDetectorAlgorithmFactory as pcaadaf
-import AutomaticAI.SubspaceOutlierDetectionAlgorithmFactory as sodaf
-import AutomaticAI.SingleObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as sogaalaf
-import AutomaticAI.VariationalAutoEncoderAlgorithmFactory as vaeaf
+# import AutomaticAI.FEAWADAlgorithmFactory as FEAWADaf
+# import AutomaticAI.PReNetAlgorithmFactory as prenetaf
+# import AutomaticAI.DeepSADAlgorithmFactory as dsadaf
+# import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
+# import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
+# import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
+# import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
+# import AutomaticAI.IsolationForestAlgorithmFactory as ifaf
+# import AutomaticAI.SemiSupervisedKNNAlgorithmFactory as ssknnaf
+# import AutomaticAI.LightweightOnlineDetectorAlgorithmFactory as lodaaf
+# import AutomaticAI.LocalOutlierFactorAlgorithmFactory as lofaf
+# import AutomaticAI.LSTMOutlierDetectorAlgorithmFactory as lstmdaaf
+# import AutomaticAI.MultiObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as mogaalaf
+# import AutomaticAI.OneClassSVMAlgorithmFactory as ocsvmaf
+# import AutomaticAI.PCAAnomalyDetectorAlgorithmFactory as pcaadaf
+# import AutomaticAI.SubspaceOutlierDetectionAlgorithmFactory as sodaf
+# import AutomaticAI.SingleObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as sogaalaf
+# import AutomaticAI.VariationalAutoEncoderAlgorithmFactory as vaeaf
+# import AutomaticAI.FeatureBaggingOutlierDetectionAlgorithmFactory as fbodaf
+# import AutomaticAI.MinimumCovarianceDeterminantAlgorithmFactory as mcdaf
+# import AutomaticAI.LocallySelectiveCombinationAlgorithmFactory as lscaf
+# import AutomaticAI.InneAnomalyDetectorAlgorithmFactory as inneaf
+# import AutomaticAI.LMDDAnomalyDetectorAlgorithmFactory as lmddadaf
+import AutomaticAI.KDEAnomalyDetectorAlgorithmFactory as kdeaf
 import AutomaticAI.BayesianRidgeRegressionAlgorithmFactory as brraf
 import AutomaticAI.PassiveAgressiveRegressionAlgorithmFactory as paraf
 import AutomaticAI.OrthogonalMatchingPursuitRegressionAlgorthmFactory as ompraf
@@ -132,24 +138,30 @@ regression_algorithms = [dtrf.get_algorithm(),
 adaptive_regression_algorithms = []
 
 anomaly_detection_semisupervised_algorithms = [
-    dsadaf.get_algorithm(),
-    prenetaf.get_algorithm(),
-    ganomalyaf.get_algorithm(),
-    FEAWADaf.get_algorithm(),
-    abodaf.get_algorithm(),
-    coblofaf.get_algorithm(),
-    hbodaf.get_algorithm(),
-    ifaf.get_algorithm(),
-    ssknnaf.get_algorithm(),
-    lodaaf.get_algorithm(),
-    lofaf.get_algorithm(),
-    lstmdaaf.get_algorithm(),
-    mogaalaf.get_algorithm(),
-    ocsvmaf.get_algorithm(),
-    pcaadaf.get_algorithm(),
-    sodaf.get_algorithm(),
-    sogaalaf.get_algorithm(),
-    vaeaf.get_algorithm(),
+    # dsadaf.get_algorithm(),
+    # prenetaf.get_algorithm(),
+    # ganomalyaf.get_algorithm(),
+    # FEAWADaf.get_algorithm(),
+    # abodaf.get_algorithm(),
+    # coblofaf.get_algorithm(),
+    # hbodaf.get_algorithm(),
+    # ifaf.get_algorithm(),
+    # ssknnaf.get_algorithm(),
+    # lodaaf.get_algorithm(),
+    # lofaf.get_algorithm(),
+    # lstmdaaf.get_algorithm(),
+    # mogaalaf.get_algorithm(),
+    # ocsvmaf.get_algorithm(),
+    # pcaadaf.get_algorithm(),
+    # sodaf.get_algorithm(),
+    # sogaalaf.get_algorithm(),
+    # vaeaf.get_algorithm(),
+    # fbodaf.get_algorithm(),
+    # mcdaf.get_algorithm(),
+    # lscaf.get_algorithm(),
+    # inneaf.get_algorithm(),
+    # lmddadaf.get_algorithm(),
+    kdeaf.get_algorithm(),
 ]
 
 anomaly_detection_supervised_algorithms = []

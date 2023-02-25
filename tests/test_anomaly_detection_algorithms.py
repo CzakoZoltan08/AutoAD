@@ -4,13 +4,20 @@ from sklearn.preprocessing import StandardScaler
 from autoad.algorithms.abod import AngleBaseOutlierDetection
 from autoad.algorithms.autoencoder import AutoEncoder
 from autoad.algorithms.cblof import ClusterBasedLocalOutlierFactor
+from autoad.algorithms.feature_bagging import FeatureBaggingOutlierDetection
 from autoad.algorithms.fttransformer.fttransformer import FTTransformer
 from autoad.algorithms.ganomaly.ganomaly import GANomaly
+from autoad.algorithms.gmm import GMMAnomalyDetector
 from autoad.algorithms.hbos import HistogramBasedOutlierDetection
+from autoad.algorithms.inne import InneAnomalyDetector
+from autoad.algorithms.kde import KDEAnomalyDetector
 from autoad.algorithms.knn import KNearestNeighbors
+from autoad.algorithms.lmdd import LMDDAnomalyDetector
 from autoad.algorithms.loda import LightweightOnlineDetector
 from autoad.algorithms.lof import LocalOutlierFactor
+from autoad.algorithms.lscp import LocallySelectiveCombination
 from autoad.algorithms.lstmod import LSTMOutlierDetector
+from autoad.algorithms.mcd import MinimumCovarianceDeterminant
 from autoad.algorithms.mogaal import MultiObjectiveGenerativeAdversarialActiveLearning
 from autoad.algorithms.ocsvm import OneClassSVM
 from autoad.algorithms.pca import PCAAnomalyDetector
@@ -176,6 +183,41 @@ def sogaal_model():
 @pytest.fixture
 def vae_model():
     return VariationalAutoEncoder(encoder_neurons=[32, 16], decoder_neurons=[16, 32])
+
+
+@pytest.fixture
+def feature_bagging_model():
+    return FeatureBaggingOutlierDetection()
+
+
+@pytest.fixture
+def mcd_model():
+    return MinimumCovarianceDeterminant()
+
+
+@pytest.fixture
+def lscp_model():
+    return LocallySelectiveCombination()
+
+
+@pytest.fixture
+def inne_model():
+    return InneAnomalyDetector()
+
+
+@pytest.fixture
+def gmm_model():
+    return GMMAnomalyDetector()
+
+
+@pytest.fixture
+def kde_model():
+    return KDEAnomalyDetector()
+
+
+@pytest.fixture
+def lmdd_model():
+    return LMDDAnomalyDetector()
 
 
 def test_isolation_forest(X_train,
@@ -522,6 +564,22 @@ def test_vae_model(X_train,
     assert prn > 0.5
 
 
+def test_feature_bagging_model(X_train,
+                               X_test,
+                               y_train,
+                               y_test,
+                               feature_bagging_model):
+    feature_bagging_model.fit(X_train, y_train)
+
+    y_pred = feature_bagging_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
 def test_deeplog_model(X_train,
                        X_test,
                        y_train,
@@ -530,6 +588,96 @@ def test_deeplog_model(X_train,
     deep_log_model.fit(X_train, y_train)
 
     y_pred = deep_log_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_mcd_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   mcd_model):
+    mcd_model.fit(X_train, y_train)
+
+    y_pred = mcd_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_lscp_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    lscp_model):
+    lscp_model.fit(X_train, y_train)
+
+    y_pred = lscp_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_inne_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    inne_model):
+    inne_model.fit(X_train, y_train)
+
+    y_pred = inne_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+    prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+    assert prn > 0.5
+
+
+def test_gmm_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   gmm_model):
+    gmm_model.fit(X_train, y_train)
+
+    y_pred = gmm_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_kde_model(X_train,
+                   X_test,
+                   y_train,
+                   y_test,
+                   kde_model):
+    kde_model.fit(X_train, y_train)
+
+    y_pred = kde_model.predict(X_test)
+
+    roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
+
+    assert roc > 0.5
+
+
+def test_lmdd_model(X_train,
+                    X_test,
+                    y_train,
+                    y_test,
+                    lmdd_model):
+    lmdd_model.fit(X_train, y_train)
+
+    y_pred = lmdd_model.predict(X_test)
 
     roc = round(roc_auc_score(y_test, y_pred), ndigits=4)
     prn = round(precision_n_scores(y_test, y_pred), ndigits=4)
