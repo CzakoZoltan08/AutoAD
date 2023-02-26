@@ -13,7 +13,8 @@ class ClusterBasedLocalOutlierFactor(BaseDetector):
                  check_estimator=False,
                  random_state=None,
                  contamination=0.1):
-        super(ClusterBasedLocalOutlierFactor, self).__init__(contamination=contamination)
+        super(ClusterBasedLocalOutlierFactor, self).__init__(
+            contamination=contamination)
         self.n_clusters = n_clusters
         self.clustering_estimator = clustering_estimator
         self.alpha = alpha
@@ -37,4 +38,4 @@ class ClusterBasedLocalOutlierFactor(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)

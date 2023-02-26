@@ -9,7 +9,8 @@ class HistogramBasedOutlierDetection(BaseDetector):
                  alpha=0.1,
                  tol=0.5,
                  contamination=0.1):
-        super(HistogramBasedOutlierDetection, self).__init__(contamination=contamination)
+        super(HistogramBasedOutlierDetection, self).__init__(
+            contamination=contamination)
         self.n_bins = n_bins
         self.alpha = alpha
         self.tol = tol
@@ -27,4 +28,4 @@ class HistogramBasedOutlierDetection(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)

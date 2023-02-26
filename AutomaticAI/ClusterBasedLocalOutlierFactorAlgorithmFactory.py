@@ -27,7 +27,7 @@ parameter_constraint_dict = OrderedDict()
 param_dict = OrderedDict()
 param_dict['alpha'] = 0.02
 
-bounds = [(0.00001, 1.0), (5.0000001, 48.99), (1, 98.99)]
+bounds = [(0.00001, 0.99), (5.0000001, 48.99), (1, 98.99)]
 
 
 def get_algorithm():

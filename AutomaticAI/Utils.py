@@ -5,29 +5,29 @@ Created on Tue Apr 23 12:35:38 2019
 @author: czzo
 """
 
-# import AutomaticAI.FEAWADAlgorithmFactory as FEAWADaf
-# import AutomaticAI.PReNetAlgorithmFactory as prenetaf
-# import AutomaticAI.DeepSADAlgorithmFactory as dsadaf
-# import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
-# import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
-# import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
-# import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
-# import AutomaticAI.IsolationForestAlgorithmFactory as ifaf
-# import AutomaticAI.SemiSupervisedKNNAlgorithmFactory as ssknnaf
-# import AutomaticAI.LightweightOnlineDetectorAlgorithmFactory as lodaaf
-# import AutomaticAI.LocalOutlierFactorAlgorithmFactory as lofaf
-# import AutomaticAI.LSTMOutlierDetectorAlgorithmFactory as lstmdaaf
-# import AutomaticAI.MultiObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as mogaalaf
-# import AutomaticAI.OneClassSVMAlgorithmFactory as ocsvmaf
-# import AutomaticAI.PCAAnomalyDetectorAlgorithmFactory as pcaadaf
-# import AutomaticAI.SubspaceOutlierDetectionAlgorithmFactory as sodaf
-# import AutomaticAI.SingleObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as sogaalaf
-# import AutomaticAI.VariationalAutoEncoderAlgorithmFactory as vaeaf
-# import AutomaticAI.FeatureBaggingOutlierDetectionAlgorithmFactory as fbodaf
-# import AutomaticAI.MinimumCovarianceDeterminantAlgorithmFactory as mcdaf
-# import AutomaticAI.LocallySelectiveCombinationAlgorithmFactory as lscaf
-# import AutomaticAI.InneAnomalyDetectorAlgorithmFactory as inneaf
-# import AutomaticAI.LMDDAnomalyDetectorAlgorithmFactory as lmddadaf
+import AutomaticAI.FEAWADAlgorithmFactory as FEAWADaf
+import AutomaticAI.PReNetAlgorithmFactory as prenetaf
+import AutomaticAI.DeepSADAlgorithmFactory as dsadaf
+import AutomaticAI.GAnomalyAlgorithmFactory as ganomalyaf
+import AutomaticAI.AngleBaseOutlierDetectionAlgorithmFactory as abodaf
+import AutomaticAI.ClusterBasedLocalOutlierFactorAlgorithmFactory as coblofaf
+import AutomaticAI.HistogramBasedOutlierDetectionAlgorithmFactory as hbodaf
+import AutomaticAI.IsolationForestAlgorithmFactory as ifaf
+import AutomaticAI.SemiSupervisedKNNAlgorithmFactory as ssknnaf
+import AutomaticAI.LightweightOnlineDetectorAlgorithmFactory as lodaaf
+import AutomaticAI.LocalOutlierFactorAlgorithmFactory as lofaf
+import AutomaticAI.LSTMOutlierDetectorAlgorithmFactory as lstmdaaf
+import AutomaticAI.MultiObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as mogaalaf
+import AutomaticAI.OneClassSVMAlgorithmFactory as ocsvmaf
+import AutomaticAI.PCAAnomalyDetectorAlgorithmFactory as pcaadaf
+import AutomaticAI.SubspaceOutlierDetectionAlgorithmFactory as sodaf
+import AutomaticAI.SingleObjectiveGenerativeAdversarialActiveLearningAlgorithmFactory as sogaalaf
+import AutomaticAI.VariationalAutoEncoderAlgorithmFactory as vaeaf
+import AutomaticAI.FeatureBaggingOutlierDetectionAlgorithmFactory as fbodaf
+import AutomaticAI.MinimumCovarianceDeterminantAlgorithmFactory as mcdaf
+import AutomaticAI.LocallySelectiveCombinationAlgorithmFactory as lscaf
+import AutomaticAI.InneAnomalyDetectorAlgorithmFactory as inneaf
+import AutomaticAI.LMDDAnomalyDetectorAlgorithmFactory as lmddadaf
 import AutomaticAI.KDEAnomalyDetectorAlgorithmFactory as kdeaf
 import AutomaticAI.BayesianRidgeRegressionAlgorithmFactory as brraf
 import AutomaticAI.PassiveAgressiveRegressionAlgorithmFactory as paraf
@@ -138,29 +138,29 @@ regression_algorithms = [dtrf.get_algorithm(),
 adaptive_regression_algorithms = []
 
 anomaly_detection_semisupervised_algorithms = [
-    # dsadaf.get_algorithm(),
-    # prenetaf.get_algorithm(),
-    # ganomalyaf.get_algorithm(),
-    # FEAWADaf.get_algorithm(),
-    # abodaf.get_algorithm(),
-    # coblofaf.get_algorithm(),
-    # hbodaf.get_algorithm(),
-    # ifaf.get_algorithm(),
-    # ssknnaf.get_algorithm(),
-    # lodaaf.get_algorithm(),
-    # lofaf.get_algorithm(),
-    # lstmdaaf.get_algorithm(),
-    # mogaalaf.get_algorithm(),
-    # ocsvmaf.get_algorithm(),
-    # pcaadaf.get_algorithm(),
-    # sodaf.get_algorithm(),
-    # sogaalaf.get_algorithm(),
-    # vaeaf.get_algorithm(),
-    # fbodaf.get_algorithm(),
-    # mcdaf.get_algorithm(),
-    # lscaf.get_algorithm(),
-    # inneaf.get_algorithm(),
-    # lmddadaf.get_algorithm(),
+    dsadaf.get_algorithm(),
+    prenetaf.get_algorithm(),
+    ganomalyaf.get_algorithm(),
+    FEAWADaf.get_algorithm(),
+    abodaf.get_algorithm(),
+    coblofaf.get_algorithm(),
+    hbodaf.get_algorithm(),
+    ifaf.get_algorithm(),
+    ssknnaf.get_algorithm(),
+    lodaaf.get_algorithm(),
+    lofaf.get_algorithm(),
+    lstmdaaf.get_algorithm(),
+    mogaalaf.get_algorithm(),
+    ocsvmaf.get_algorithm(),
+    pcaadaf.get_algorithm(),
+    sodaf.get_algorithm(),
+    sogaalaf.get_algorithm(),
+    vaeaf.get_algorithm(),
+    fbodaf.get_algorithm(),
+    mcdaf.get_algorithm(),
+    lscaf.get_algorithm(),
+    inneaf.get_algorithm(),
+    lmddadaf.get_algorithm(),
     kdeaf.get_algorithm(),
 ]
 
@@ -308,6 +308,17 @@ def get_classification_algorithm_mapping():
     return algorithm_mapping
 
 
+def get_custom_algorithm_mapping(algorithms):
+    algorithm_mapping = {}
+    index = 0
+    for algorithm in algorithms:
+        key = algorithm.algorithm_name
+        algorithm_mapping[key] = index
+        index += 1
+
+    return algorithm_mapping
+
+
 def get_adaptive_classification_algorithm_mapping():
     algorithm_mapping = {}
     index = 0
@@ -398,6 +409,19 @@ def create_all_supported_adaptive_regresion_algorithm_list(particle_count):
     return algorithm_type_list
 
 
+def create_custom_algorithm_list(algorithm_list, particle_count):
+    algorithm_type_list = []
+
+    for algorithm in algorithm_list:
+        total = particle_count
+        if algorithm.algorithm_name == lraf.get_algorithm().algorithm_name:
+            total = 3
+        for i in range(total):
+            algorithm_type_list.append(algorithm)
+
+    return algorithm_type_list
+
+
 def create_all_supported_semisupervised_algorithm_list(particle_count):
     algorithm_type_list = []
 
@@ -414,6 +438,19 @@ def create_all_supported_semisupervised_algorithm_list(particle_count):
 def generate_initial_particle_positions(num_particles=10, distance_between_initial_particles=0.7):
     initial = []
     for algorithm in classification_algorithms:
+        initial_of_algorithm = generate_initial_parameters(
+            num_particles, algorithm.bounds, distance_between_initial_particles)
+        initial.extend(initial_of_algorithm)
+
+    return initial
+
+
+def generate_initial_particle_positions_for_custom_anomaly_detection(
+        algorithm_list,
+        num_particles=10,
+        distance_between_initial_particles=0.7):
+    initial = []
+    for algorithm in algorithm_list:
         initial_of_algorithm = generate_initial_parameters(
             num_particles, algorithm.bounds, distance_between_initial_particles)
         initial.extend(initial_of_algorithm)

@@ -12,15 +12,18 @@ from AutomaticAI.Utils import create_all_supported_algorithm_list
 from AutomaticAI.Utils import create_all_supported_adaptive_algorithm_list
 from AutomaticAI.Utils import create_all_supported_regresion_algorithm_list
 from AutomaticAI.Utils import create_all_supported_semisupervised_algorithm_list
+from AutomaticAI.Utils import create_custom_algorithm_list
 from AutomaticAI.Utils import generate_initial_particle_positions
 from AutomaticAI.Utils import generate_initial_particle_positions_for_adaptive_classification
 from AutomaticAI.Utils import generate_initial_particle_positions_for_regression
 from AutomaticAI.Utils import generate_initial_particle_positions_for_semisupervised_anomaly_detection
+from AutomaticAI.Utils import generate_initial_particle_positions_for_custom_anomaly_detection
 
 from AutomaticAI.Utils import get_classification_algorithm_mapping
 from AutomaticAI.Utils import get_regression_algorithm_mapping
 from AutomaticAI.Utils import get_adaptive_classification_algorithm_mapping
 from AutomaticAI.Utils import get_semisupervised_algorithm_mapping
+from AutomaticAI.Utils import get_custom_algorithm_mapping
 
 from AutomaticAI.Utils import train_algorithm
 from AutomaticAI.Utils import train_regression_algorithm
@@ -46,7 +49,9 @@ class PSO():
                  evaluation_metric=f1_score,
                  is_maximization=True,
                  is_adaptive=False,
-                 is_semisupervised=False):
+                 is_semisupervised=False,
+                 is_custom_algorithm_list=False,
+                 algorithm_list=[]):
 
         # establish the swarm
         self.current_epoch = 0
@@ -68,36 +73,51 @@ class PSO():
             num_particles=particle_count,
             distance_between_initial_particles=distance_between_initial_particles)
 
-        if is_classification is False:
-            self.cost_function = train_regression_algorithm
-            self.algorithm_mapping = None
-            self.algorithm_mapping = get_regression_algorithm_mapping()
-            algorithms = create_all_supported_regresion_algorithm_list(
-                particle_count)
-            initial_positions = generate_initial_particle_positions_for_regression(
-                num_particles=particle_count,
-                distance_between_initial_particles=distance_between_initial_particles)
-
-        if is_adaptive is True:
-            self.cost_function = traint_adaptive_algorithm
-            self.algorithm_mapping = None
-            self.algorithm_mapping = get_adaptive_classification_algorithm_mapping()
-            algorithms = create_all_supported_adaptive_algorithm_list(
-                particle_count)
-            initial_positions = generate_initial_particle_positions_for_adaptive_classification(
-                num_particles=particle_count,
-                distance_between_initial_particles=distance_between_initial_particles)
-
-        if is_semisupervised is True:
+        if is_custom_algorithm_list is True:
             self.cost_function = train_semisupervised_algorithm
             self.algorithm_mapping = None
-            self.algorithm_mapping = get_semisupervised_algorithm_mapping()
+            self.algorithm_mapping = get_custom_algorithm_mapping(
+                algorithm_list)
             self.is_semisupervised = True
-            algorithms = create_all_supported_semisupervised_algorithm_list(
+            algorithms = create_custom_algorithm_list(
+                algorithm_list,
                 particle_count)
-            initial_positions = generate_initial_particle_positions_for_semisupervised_anomaly_detection(
+            initial_positions = generate_initial_particle_positions_for_custom_anomaly_detection(
+                algorithm_list,
                 num_particles=particle_count,
                 distance_between_initial_particles=distance_between_initial_particles)
+        else:
+            if is_classification is False:
+                self.cost_function = train_regression_algorithm
+                self.algorithm_mapping = None
+                self.algorithm_mapping = get_regression_algorithm_mapping()
+                algorithms = create_all_supported_regresion_algorithm_list(
+                    particle_count)
+                initial_positions = generate_initial_particle_positions_for_regression(
+                    num_particles=particle_count,
+                    distance_between_initial_particles=distance_between_initial_particles)
+
+            if is_adaptive is True:
+                self.cost_function = traint_adaptive_algorithm
+                self.algorithm_mapping = None
+                self.algorithm_mapping = get_adaptive_classification_algorithm_mapping()
+                algorithms = create_all_supported_adaptive_algorithm_list(
+                    particle_count)
+                initial_positions = generate_initial_particle_positions_for_adaptive_classification(
+                    num_particles=particle_count,
+                    distance_between_initial_particles=distance_between_initial_particles)
+
+            if is_semisupervised is True:
+                self.cost_function = train_semisupervised_algorithm
+                self.algorithm_mapping = None
+                self.algorithm_mapping = get_semisupervised_algorithm_mapping()
+                self.is_semisupervised = True
+                algorithms = create_all_supported_semisupervised_algorithm_list(
+                    particle_count)
+                initial_positions = generate_initial_particle_positions_for_semisupervised_anomaly_detection(
+
+                    num_particles=particle_count,
+                    distance_between_initial_particles=distance_between_initial_particles)
 
         self.num_particles = len(algorithms)
 
@@ -139,6 +159,24 @@ class PSO():
 
         self.swarm.pop(i)
 
+    def _remove_worst_by_algorithm_name(self, algorithm_name, verbose=False):
+        particles = [
+            x for x in self.swarm if x.algorithm.algorithm_name == algorithm_name]
+        if self.isMaximization:
+            (m, i) = min((v.metric_best_i, i)
+                         for i, v in enumerate(particles))
+        else:
+            (m, i) = max((v.metric_best_i, i)
+                         for i, v in enumerate(particles))
+
+        if verbose:
+            print("\n* Particle {} Removed --- Algorithm Type: {} With Metric {} *".format(
+                i, self.swarm[i].algorithm.algorithm_name, self.swarm[i].metric_best_i))
+
+        algorithm_index = self.swarm.index(particles[i])
+
+        self.swarm.pop(algorithm_index)
+
     def _add_to_best(self, verbose=False):
         best_particle = self._get_best_particle()
 
@@ -153,9 +191,23 @@ class PSO():
             print("\n* Particle Added -- Algorithm Type {} *".format(
                 best_particle.algorithm.algorithm_name))
 
-        return self._generate_new_particle(best_particle, current_hyper_parameters, algorithm_type)
+        return self._generate_new_particle(best_particle, current_hyper_parameters)
 
-    def _generate_new_particle(self, best_particle, current_hyper_parameters, algorithm_type):
+    def _add_by_algorithm_name(self, algorithm_name, verbose=False):
+        particles = self._get_particles_by_algorithm_name(algorithm_name)
+
+        current_hyper_parameters = self._generate_list_of_hyper_parameters(
+            particles)
+
+        if verbose:
+            print("\n* Particle Added -- Algorithm Type {} *".format(algorithm_name))
+
+        return self._generate_new_particle(particles[0], current_hyper_parameters)
+
+    def _distinct_algorithm_names(self):
+        return {x.algorithm.algorithm_name: x for x in self.swarm}.values()
+
+    def _generate_new_particle(self, best_particle, current_hyper_parameters):
         dimensions = best_particle.algorithm.get_dimensions()
         distance_between_initial_particles = self.distance_between_initial_particles
         minimum_distance = 0
@@ -189,6 +241,9 @@ class PSO():
     def _get_particles_by_algorithm_type(self, algorithm_type):
         return [particle for particle in self.swarm if particle.algorithm.algorithm_type == algorithm_type]
 
+    def _get_particles_by_algorithm_name(self, algorithm_name):
+        return [particle for particle in self.swarm if particle.algorithm.algorithm_name == algorithm_name]
+
     def _generate_list_of_hyper_parameters(self, particles):
         current_hyper_parameters = []
         for i in range(0, len(particles)):
@@ -209,13 +264,12 @@ class PSO():
         }
 
         for particle in self.swarm[1:]:
-            if (particle.algorithm.algorithm_name == current_algorithm_name):
-                current_result = best_results[current_algorithm_name].metric_i
+            if (particle.algorithm.algorithm_name in best_results):
+                current_result = best_results[particle.algorithm.algorithm_name].metric_i
                 if particle.metric_i > current_result:
-                    best_results[current_algorithm_name] = particle
+                    best_results[particle.algorithm.algorithm_name] = particle
             else:
-                current_algorithm_name = particle.algorithm.algorithm_name
-                best_results[current_algorithm_name] = particle
+                best_results[particle.algorithm.algorithm_name] = particle
 
         return best_results
 
@@ -313,7 +367,7 @@ class PSO():
                         pos_best_g[golbal_best_position_index] = list(
                             self.swarm[j].position_i)
                         metric_best_g = float(self.swarm[j].metric_best_i)
-                        model_best_g = self.swarm[j].model_best_i
+                        model_best_g = self.swarm[j]
                         best_model_name = self.swarm[j].algorithm.algorithm_name
 
                     if verbose:
@@ -369,6 +423,33 @@ class PSO():
                             print("Early stop - number of particles 0")
 
                         return metric_best_g, model_best_g, best_model_name
+                else:
+                    particles = self._distinct_algorithm_names()
+
+                    particle_to_remove = 1
+                    if self.particle_count > 2 and self.particle_count <= 6:
+                        particle_to_remove = int(self.particle_count/2)
+                    else:
+                        particle_to_remove = int(self.particle_count/3)
+
+                    for particle in particles:
+                        for k in range(particle_to_remove):
+                            self._remove_worst_by_algorithm_name(
+                                particle.algorithm.algorithm_name)
+                        for k in range(particle_to_remove):
+                            new_particle = self._add_by_algorithm_name(
+                                particle.algorithm.algorithm_name)
+
+                            new_particle.evaluate(
+                                self.cost_function,
+                                X_train,
+                                X_test,
+                                Y_train,
+                                Y_test,
+                                epoch=i,
+                                verbose=verbose)
+
+                            self.swarm.append(new_particle)
 
                 # cycle through swarm and update velocities and position
                 for j in range(0, self.num_particles):
@@ -402,6 +483,6 @@ class PSO():
             job.save_meta()
 
         if compare_models is True:
-            return self._select_best_algorithms()
+            return model_best_g, self._select_best_algorithms()
 
         return metric_best_g, model_best_g, best_model_name

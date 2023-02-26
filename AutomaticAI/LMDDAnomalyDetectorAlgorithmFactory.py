@@ -27,7 +27,7 @@ parameter_constraint_dict = OrderedDict()
 param_dict = OrderedDict()
 param_dict['contamination'] = 0.1
 
-bounds = [(0.001, 0.4999), (0.0000001, 2.99), (50, 195)]
+bounds = [(0.001, 0.4999), (0.0000001, 2.99), (50, 145)]
 
 
 def get_algorithm():
