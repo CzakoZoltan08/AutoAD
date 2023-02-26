@@ -47,4 +47,4 @@ class OneClassSVM(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)

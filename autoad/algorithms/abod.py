@@ -8,7 +8,8 @@ class AngleBaseOutlierDetection(BaseDetector):
                  n_neighbors=5,
                  method='fast',
                  contamination=0.1):
-        super(AngleBaseOutlierDetection, self).__init__(contamination=contamination)
+        super(AngleBaseOutlierDetection, self).__init__(
+            contamination=contamination)
         self.method = method
         self.n_neighbors = n_neighbors
         self.contamination = contamination
@@ -24,4 +25,4 @@ class AngleBaseOutlierDetection(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)

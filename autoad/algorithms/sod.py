@@ -9,7 +9,8 @@ class SubspaceOutlierDetection(BaseDetector):
                  ref_set=10,
                  alpha=0.8,
                  contamination=0.1):
-        super(SubspaceOutlierDetection, self).__init__(contamination=contamination)
+        super(SubspaceOutlierDetection, self).__init__(
+            contamination=contamination)
         self.n_neighbors = n_neighbors
         self.ref_set = ref_set
         self.alpha = alpha
@@ -27,4 +28,4 @@ class SubspaceOutlierDetection(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)

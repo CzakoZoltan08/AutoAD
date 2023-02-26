@@ -8,7 +8,8 @@ class LightweightOnlineDetector(BaseDetector):
                  n_bins=10,
                  n_random_cuts=100,
                  contamination=0.1):
-        super(LightweightOnlineDetector, self).__init__(contamination=contamination)
+        super(LightweightOnlineDetector, self).__init__(
+            contamination=contamination)
         self.n_bins = n_bins
         self.n_random_cuts = n_random_cuts
         self.contamination = contamination
@@ -24,4 +25,4 @@ class LightweightOnlineDetector(BaseDetector):
         return self
 
     def predict(self, X):
-        return self.detector_.decision_function(X)
+        return self.detector_.predict(X)
