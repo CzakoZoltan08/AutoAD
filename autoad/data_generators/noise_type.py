@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class NoiseType(Enum):
-    NONE = 0
-    DUPLICATES = 1
-    IRRELEVANT_FEATURES = 2
-    LABEL_ERROR = 3
+    NONE = "NONE"
+    DUPLICATES = "DUPLICATES"
+    IRRELEVANT_FEATURES = "IRRELEVANT_FEATURES"
+    LABEL_ERROR = "LABEL_ERROR"
