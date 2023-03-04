@@ -14,6 +14,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.base import TransformerMixin
 
+from imblearn.pipeline import Pipeline as impipe
+from imblearn.over_sampling import SMOTE
+
+from sklearn.impute import SimpleImputer
+from sklearn.decomposition import PCA
+
 
 class AnomalyDataGenerator():
     def __init__(self) -> None:
@@ -131,6 +137,32 @@ class AnomalyDataGenerator():
 
         return X, y
 
+    def _zero_fill(self, X):
+        np.nan_to_num(X)
+        return X
+
+    def _mean_fill(self, X):
+        imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+        imputer = imputer.fit(X)
+        X = imputer.transform(X)
+        return X
+
+    def _median_fill(self, X):
+        imputer = SimpleImputer(missing_values=np.nan, strategy='median')
+        imputer = imputer.fit(X)
+        X = imputer.transform(X)
+        return X
+
+    def _handle_missing_values(self, X, fill_algorithm='Median'):
+        if fill_algorithm == 'Zero':
+            return self._zero_fill(X)
+
+        if fill_algorithm == 'Mean':
+            return self._mean_fill(X)
+
+        if fill_algorithm == 'Median':
+            return self._median_fill(X)
+
     def generate(self,
                  dataset: Dataset = Dataset.CARDIO,
                  anomaly_type: AnomalyType = AnomalyType.LOCAL,
@@ -140,23 +172,37 @@ class AnomalyDataGenerator():
                  test_size: float = 0.25,
                  threshold: int = sys.maxsize,
                  apply_data_scaling: bool = False,
-                 scaler: TransformerMixin = MinMaxScaler()):
+                 apply_data_rebalancing: bool = False,
+                 apply_missing_data_filling: bool = False,
+                 apply_dimensionality_reduction: bool = False,
+                 scaler=MinMaxScaler(),
+                 rebalance_pipeline=impipe(
+                     steps=[('o', SMOTE(sampling_strategy=0.2))]),
+                 fill_algorithm='Median',
+                 dimensinality_reduction_algorithm=PCA(n_components=2)):
         data = np.load(os.path.join(os.path.dirname(__file__), 'datasets',
                        dataset + '.npz'), allow_pickle=True)
         X = data['X']
         y = data['y']
 
+        X, y = self._sub_sample(threshold, X, y)
         X, y = self._generate_data_by_anomaly_type(X, y, anomaly_type)
         X, y = self._add_noise(X, y, noise_type, noise_ratio)
-        X, y = self._sub_sample(threshold, X, y)
+
+        if apply_missing_data_filling is True:
+            X = self._handle_missing_values(X, fill_algorithm)
+
+        if apply_dimensionality_reduction is True:
+            X = dimensinality_reduction_algorithm.fit_transform(X)
+
+        if apply_data_rebalancing is True:
+            X, y = rebalance_pipeline.fit_resample(X, y)
+
+        if apply_data_scaling is True:
+            scaler[0].fit_transform(X)
 
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, shuffle=True, stratify=y)
-
-        if apply_data_scaling is True:
-            scaler.fit(X_train)
-            X_train = scaler.transform(X_train)
-            X_test = scaler.transform(X_test)
 
         y_train = self._remove_labels(y_train, labeled_anomaly_ratio)
 

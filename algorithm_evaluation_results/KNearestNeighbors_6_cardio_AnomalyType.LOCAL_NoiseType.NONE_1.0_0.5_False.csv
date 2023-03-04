@@ -1,4 +1,0 @@
-,dataset,anomaly_type,noise_type,labeled_anomaly_ratio,noise_ratio,apply_data_scaling,scaler,metric (f1_score),roc_auc,recall,precision,accuracy,f1-score
-0,6_cardio,AnomalyType.LOCAL,NoiseType.NONE,1.0,0.1,False,tuple,0.6031746031746033,0.896,0.8636,0.4634,0.924,0.6032
-1,6_cardio,AnomalyType.LOCAL,NoiseType.NONE,1.0,0.5,False,tuple,0.4444444444444445,0.7181,0.4615,0.4286,0.9544,0.4444
-2,6_cardio,AnomalyType.LOCAL,NoiseType.NONE,1.0,0.5,False,tuple,0.7346938775510204,0.9322,0.9,0.6207,0.9605,0.7347
