@@ -25,7 +25,7 @@ param_dict = OrderedDict()
 param_dict['contamination'] = 0.1
 param_dict['max_features'] = 1.0
 
-bounds = [(0.001, 0.4999), (0.0000001, 1.0), (1, 98)]
+bounds = [(0.001, 0.4999), (0.5, 1.0), (1, 98)]
 
 
 def get_algorithm():

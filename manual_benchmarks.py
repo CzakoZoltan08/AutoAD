@@ -18,6 +18,15 @@ from sklearn.base import TransformerMixin
 from sklearn.decomposition import PCA
 
 from pyod.utils.utility import precision_n_scores
+from autoad.algorithms.abod import AngleBaseOutlierDetection
+from autoad.algorithms.lmdd import LMDDAnomalyDetector
+from autoad.algorithms.lstmod import LSTMOutlierDetector
+from autoad.algorithms.mcd import MinimumCovarianceDeterminant
+from autoad.algorithms.mogaal import MultiObjectiveGenerativeAdversarialActiveLearning
+from autoad.algorithms.ocsvm import OneClassSVM
+from autoad.algorithms.sod import SubspaceOutlierDetection
+from autoad.algorithms.sogaal import SingleObjectiveGenerativeAdversarialActiveLearning
+from autoad.algorithms.vae import VariationalAutoEncoder
 
 from autoad.data_generators.anomaly_data_generator import AnomalyDataGenerator
 from autoad.data_generators.anomaly_type import AnomalyType
@@ -104,7 +113,7 @@ def main():
     labeled_anomaly_ratios = [1.0]
 
     noise_types = [NoiseType.NONE, NoiseType.DUPLICATES,
-                   NoiseType.IRRELEVANT_FEATURES, NoiseType.LABEL_ERROR]
+                   NoiseType.IRRELEVANT_FEATURES]
     anomaly_types = [AnomalyType.LOCAL,
                      AnomalyType.GLOBAL, AnomalyType.CLUSTER]
 
@@ -140,41 +149,32 @@ def main():
     # dimensinality_reduction_algorithms = [PCA(n_components=x)
     #                                       for x in range(2, 100, 10)]
 
-    # anomaly_detection_unsupervised_algorithms = [
-    #     # lofaf.get_algorithm(),
-    #     # coblofaf.get_algorithm(),
-    #     # ifaf.get_algorithm(),
-    #     # ssknnaf.get_algorithm(),
-    #     # abodaf.get_algorithm(),  # test without hyperparameter optimization
-    #     # hbodaf.get_algorithm(),
-    #     # lodaaf.get_algorithm(),
-    #     # mogaalaf.get_algorithm(), # test without hyperparameter optimization
-    #     # ocsvmaf.get_algorithm(), # test without hyperparameter optimization
-    #     # pcaadaf.get_algorithm(),
-    #     # sodaf.get_algorithm(), # test without hyperparameter optimization
-    #     # sogaalaf.get_algorithm(), # test without hyperparameter optimization
-    #     # vaeaf.get_algorithm(), # test without hyperparameter optimization
-    #     # fbodaf.get_algorithm(),
-    #     # mcdaf.get_algorithm(), # test without hyperparameter optimization
-    #     # lscaf.get_algorithm(),
-    #     # inneaf.get_algorithm(),
-    #     # lmddadaf.get_algorithm(), # test without hyperparameter optimization
-    #     # kdeaf.get_algorithm(),
-    #     # lstmdaaf.get_algorithm(), # test without hyperparameter optimization
-    # ]
-
-    supervised_algorithms = [
-        kaf.get_algorithm(),
-        rfaf.get_algorithm(),
-        etcaf.get_algorithm(),
-        dtcaf.get_algorithm(),
-        rcaf.get_algorithm(),
-        pacaf.get_algorithm(),
-        gbcaf.get_algorithm(),
-        sgdcaf.get_algorithm(),
-        etscaf.get_algorithm(),
-        xgbcaf.get_algorithm(),
+    anomaly_detection_unsupervised_algorithms = [
+        AngleBaseOutlierDetection(),  # test without hyperparameter optimization
+        # test without hyperparameter optimization
+        # MultiObjectiveGenerativeAdversarialActiveLearning(),
+        OneClassSVM(),  # test without hyperparameter optimization
+        SubspaceOutlierDetection(),  # test without hyperparameter optimization
+        # test without hyperparameter optimization
+        SingleObjectiveGenerativeAdversarialActiveLearning(),
+        VariationalAutoEncoder(),  # test without hyperparameter optimization
+        MinimumCovarianceDeterminant(),  # test without hyperparameter optimization
+        LMDDAnomalyDetector(),  # test without hyperparameter optimization
+        LSTMOutlierDetector(),  # test without hyperparameter optimization
     ]
+
+    # supervised_algorithms = [
+    #     kaf.get_algorithm(),
+    #     rfaf.get_algorithm(),
+    #     etcaf.get_algorithm(),
+    #     dtcaf.get_algorithm(),
+    #     rcaf.get_algorithm(),
+    #     pacaf.get_algorithm(),
+    #     gbcaf.get_algorithm(),
+    #     sgdcaf.get_algorithm(),
+    #     etscaf.get_algorithm(),
+    #     xgbcaf.get_algorithm(),
+    # ]
 
     field_names = ['algorithm_name', 'dataset', 'anomaly_type', 'noise_type',
                    'labeled_anomaly_ratio', 'noise_ratio',
@@ -186,11 +186,11 @@ def main():
     test_type = 'Supervised_algorithms'
 
     for dataset_name in dataset_names:
-        for algorithm in supervised_algorithms:
+        for algorithm in anomaly_detection_unsupervised_algorithms:
             for anomaly_type in anomaly_types:
                 dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
                 file_name = f"./algorithm_evaluation_results/{dn}_{test_type}_" + \
-                    f"{dataset_name}_{anomaly_type}_{algorithm.algorithm_name}_" + \
+                    f"{dataset_name}_{anomaly_type}_{algorithm.__class__.__name__}_" + \
                     f"rebalance{False}.csv"
 
                 with open(file_name, 'w') as f_object:
@@ -278,27 +278,27 @@ def main():
                             fill_algorithm=test_case.fill_algorithm,
                             apply_dimensionality_reduction=test_case.apply_dimensionality_reduction,
                             dimensinality_reduction_algorithm=test_case.dimensinality_reduction_algorithm,
-                            threshold=2000
+                            threshold=10000
                         )
                     except Exception:
                         continue
 
                     x_train = dataset['X_train']
-                    y_train = dataset['y_train'].ravel()
+                    # y_train = dataset['y_train'].ravel()
                     x_test = dataset['X_test']
                     y_test = dataset['y_test'].ravel()
 
-                    num_particles = 3
-                    num_iterations = 5
+                    # num_particles = 3
+                    # num_iterations = 5
 
-                    evaluation_function = roc_auc_score
+                    # evaluation_function = roc_auc_score
 
-                    pso_unsupervised = pso_algorithm.PSO(particle_count=num_particles,
-                                                         is_classification=True,
-                                                         distance_between_initial_particles=0.7,
-                                                         evaluation_metric=evaluation_function,
-                                                         is_custom_algorithm_list=True,
-                                                         algorithm_list=[test_case.algorithm])
+                    # pso_unsupervised = pso_algorithm.PSO(particle_count=num_particles,
+                    #                                      is_classification=True,
+                    #                                      distance_between_initial_particles=0.7,
+                    #                                      evaluation_metric=evaluation_function,
+                    #                                      is_custom_algorithm_list=True,
+                    #                                      algorithm_list=[test_case.algorithm])
 
                     # pso_supervised = \
                     #     pso_algorithm.PSO(particle_count=num_particles, is_semisupervised=False,
@@ -319,17 +319,11 @@ def main():
                     should_compare_models = True
 
                     try:
-                        best_model, best_results_semi_supervised = \
-                            pso_unsupervised.fit(X_train=x_train,
-                                                 X_test=x_test,
-                                                 Y_train=y_train,
-                                                 Y_test=y_test,
-                                                 maxiter=num_iterations,
-                                                 verbose=True,
-                                                 compare_models=should_compare_models,
-                                                 max_distance=0.05,
-                                                 agents=1)
-                        y_pred = best_model.model_best_i.predict(x_test)
+                        best_model = test_case.algorithm.fit(x_train)
+                        best_results_semi_supervised = best_model.predict(
+                            x_test)
+
+                        y_pred = best_model.predict(x_test)
                         roc_auc = round(roc_auc_score(
                             y_test, y_pred), ndigits=4)
                         accuracy = round(accuracy_score(
@@ -341,7 +335,7 @@ def main():
 
                         if should_compare_models is False:
                             print(
-                                f"Best metric: {best_model.metric_best_i} - Best roc_auc: {roc_auc} - " +
+                                f"Best roc_auc: {roc_auc} - " +
                                 f"Best recall: {recall} - Best accuracy: {accuracy} - Best F1: {f1} - " +
                                 f"Precision: {precision}")
                             pprint(vars(best_model))
@@ -387,21 +381,19 @@ def main():
                             else:
                                 df_for_csv = pd.concat([df_for_csv, df])
                         else:
-                            best_results = {**best_results_semi_supervised}
-
                             print(
                                 "################## START ########################")
 
                             print(" !!!!!!!! GLOBAL BEST !!!!!!!!!!")
                             print(
-                                f"Best metric: {best_model.metric_best_i} - Best roc_auc: {roc_auc} - " +
+                                f"Best roc_auc: {roc_auc} - " +
                                 f"Best recall: {recall} - Best accuracy: {accuracy} - Best F1: {f1} - " +
                                 f"Precision: {precision}")
                             pprint(vars(best_model))
                             print(" !!!!!!!! GLOBAL BEST !!!!!!!!!!")
 
                             res_dict = {
-                                "algorithm_name": test_case.algorithm.algorithm_name,
+                                "algorithm_name": test_case.algorithm.__class__.__name__,
                                 "dataset": test_case.dataset_name,
                                 "anomaly_type": test_case.anomaly_type,
                                 "noise_type": test_case.noise_type,
@@ -440,22 +432,10 @@ def main():
                                 df_for_csv = df.copy()
                             else:
                                 df_for_csv = pd.concat([df_for_csv, df])
-
-                            for key, value in best_results.items():
-                                print(
-                                    "---------------------------------------------------------------------------------")
-                                print(
-                                    f'{key} -- {value.metric_i} -- Training time: {value.training_time}')
-                                pprint(vars(value.model_i))
-                                print(
-                                    "---------------------------------------------------------------------------------")
-
-                            print(
-                                "################### END #########################")
                     except Exception as e:
                         print(str(e))
                         res_dict = {
-                            "algorithm_name": test_case.algorithm.algorithm_name,
+                            "algorithm_name": test_case.algorithm.__class__.__name__,
                             "dataset": test_case.dataset_name,
                             "anomaly_type": test_case.anomaly_type,
                             "noise_type": test_case.noise_type,

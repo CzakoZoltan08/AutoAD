@@ -211,6 +211,8 @@ class PSO():
         dimensions = best_particle.algorithm.get_dimensions()
         distance_between_initial_particles = self.distance_between_initial_particles
         minimum_distance = 0
+        nr_of_try = 0
+
         while minimum_distance < distance_between_initial_particles:
             hyper_parameter_list = []
             for j in range(dimensions):
@@ -220,6 +222,17 @@ class PSO():
                 hyper_parameter_list.append(parameter_value)
             minimum_distance = calculate_min_distance(
                 current_hyper_parameters, hyper_parameter_list)
+
+            nr_of_try += 1
+
+            if nr_of_try > 20:
+                new_algorithm = copy.deepcopy(best_particle.algorithm)
+
+                return Particle(
+                    new_algorithm,
+                    hyper_parameter_list=hyper_parameter_list,
+                    evaluation_metric=self.evaluation_metric
+                )
 
         new_algorithm = copy.deepcopy(best_particle.algorithm)
 
@@ -333,7 +346,7 @@ class PSO():
 
                 result = []
 
-                if self.is_unsupervised is not True:
+                if self.is_unsupervised is False or self.is_semisupervised is True:
                     for k in range(0, len(self.swarm)):
                         result_k = evaluate_particle(particle=self.swarm[k],
                                                      epoch=i,
