@@ -29,6 +29,12 @@ import AutomaticAI.RidgeClassifierAlgorithmFactory as rcaf
 import AutomaticAI.GradientBoostingClassifierAlgorithmFactory as gbcaf
 import AutomaticAI.XGBoostClassifierAlgorithmFactory as xgbcaf
 
+from autoad.algorithms.deep_sad.deepsad import DeepSAD
+from autoad.algorithms.feawad.feawad import FEAWAD
+from autoad.algorithms.ganomaly.ganomaly import GANomaly
+from autoad.algorithms.prenet.prenet import PReNet
+from autoad.algorithms.repen.repen import REPEN
+
 
 anomaly_detection_unsupervised_algorithms = [
     lofaf.get_algorithm(),
@@ -57,6 +63,14 @@ supervised_algorithms = [
     etscaf.get_algorithm(),
 ]
 
+semisupervised_algorithms = [
+    GANomaly(),
+    DeepSAD(),
+    # REPEN(),
+    PReNet(),
+    # FEAWAD(),
+]
+
 
 def box_plot(diagram_folder_path, df):
     # algorithm_names = [
@@ -67,11 +81,11 @@ def box_plot(diagram_folder_path, df):
     roc_auc_list = []
     for algorithm_name in algorithm_names:
         noise_df = df[df['noise_type']
-                      == 'NoiseType.NONE']
-        anomaly_type_df = noise_df[noise_df['anomaly_type']
-                                   == 'AnomalyType.CLUSTER']
-        filtered_df = anomaly_type_df[anomaly_type_df['algorithm_name']
-                                      == algorithm_name]
+                      == 'NoiseType.LABEL_ERROR']
+        # anomaly_type_df = noise_df[noise_df['anomaly_type']
+        #                            == 'AnomalyType.CLUSTER']
+        filtered_df = noise_df[noise_df['algorithm_name']
+                               == algorithm_name]
         lof_wine_local_roc_auc = filtered_df['roc_auc'].values.tolist()
         roc_auc_list.append(lof_wine_local_roc_auc)
 
@@ -87,8 +101,8 @@ def box_plot(diagram_folder_path, df):
     # show plot
     plt.show()
 
-    anomaly_types = "AnomalyTypesCluster"
-    noise_types = "NoiseTypesNone"
+    anomaly_types = "AnomalyTypesAll"
+    noise_types = "NoiseTypesLabelErrors"
     algoritm_type = "Supervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     img_file_name = f"{dn}_{algoritm_type}_{anomaly_types}_{noise_types}.png"
@@ -99,11 +113,13 @@ def box_plot(diagram_folder_path, df):
 def line_chart(diagram_folder_path, df):
     # algorithm_names = [
     #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+    # algorithm_names = [
+    #     name.algorithm_name for name in supervised_algorithms]
     algorithm_names = [
-        name.algorithm_name for name in supervised_algorithms]
+        algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
 
     roc_auc_list = []
-    steps = [x / 100.0 for x in range(0, 100, 10)]
+    steps = [x / 100.0 for x in range(0, 60, 10)]
 
     fig = plt.figure(figsize=(20, 10))
     ax = plt.subplot(111)
@@ -112,11 +128,11 @@ def line_chart(diagram_folder_path, df):
         algorithm_df = df[df['algorithm_name']
                           == algorithm_name]
         noise_df = algorithm_df[algorithm_df['noise_type']
-                                == 'NoiseType.DUPLICATES']
-        anomaly_type_df = noise_df[noise_df['anomaly_type']
-                                   == 'AnomalyType.LOCAL']
-        filtered_df = anomaly_type_df[anomaly_type_df['algorithm_name']
-                                      == algorithm_name]
+                                == 'NoiseType.LABEL_ERROR']
+        # anomaly_type_df = noise_df[noise_df['anomaly_type']
+        #                            == 'AnomalyType.LOCAL']
+        filtered_df = noise_df[noise_df['algorithm_name']
+                               == algorithm_name]
         mean_roc_by_datasets = filtered_df.groupby(['noise_ratio'])[
             'roc_auc'].mean()
         roc_auc = mean_roc_by_datasets.values.tolist()
@@ -124,7 +140,7 @@ def line_chart(diagram_folder_path, df):
 
         ax.plot(steps, roc_auc, label=algorithm_name)
 
-    ax.set_xlabel('Noise Ratio')
+    ax.set_xlabel('Label Ratio')
     # Set the y axis label of the current axis.
     ax.set_ylabel('ROC AUC Score')
 
@@ -135,9 +151,9 @@ def line_chart(diagram_folder_path, df):
     # show plot
     plt.show()
 
-    anomaly_types = "AnomalyTypesLocal"
-    noise_types = "NoiseTypesDuplicates"
-    algoritm_type = "Supervised"
+    anomaly_types = "AnomalyTypesAll"
+    noise_types = "NoiseTypesLabelError"
+    algoritm_type = "Semisupervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     img_file_name = f"{dn}_linechart_{algoritm_type}_{anomaly_types}_{noise_types}.png"
     img_name = os.path.join(diagram_folder_path, img_file_name)
@@ -147,8 +163,10 @@ def line_chart(diagram_folder_path, df):
 def bar_chart(diagram_folder_path, df):
     # algorithm_names = [
     #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+    # algorithm_names = [
+    #     name.algorithm_name for name in supervised_algorithms]
     algorithm_names = [
-        name.algorithm_name for name in supervised_algorithms]
+        algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
 
     roc_auc_list = []
 
@@ -158,10 +176,9 @@ def bar_chart(diagram_folder_path, df):
     for algorithm_name in algorithm_names:
         algorithm_df = df[df['algorithm_name']
                           == algorithm_name]
-        noise_df = algorithm_df[algorithm_df['noise_type']
-                                == 'NoiseType.NONE']
+        noise_df = algorithm_df[algorithm_df['noise_ratio'] == 0]
         anomaly_type_df = noise_df[noise_df['anomaly_type']
-                                   == 'AnomalyType.CLUSTER']
+                                   == 'AnomalyType.LOCAL']
         filtered_df = anomaly_type_df[anomaly_type_df['algorithm_name']
                                       == algorithm_name]
         mean_roc = filtered_df['roc_auc'].mean()
@@ -179,9 +196,9 @@ def bar_chart(diagram_folder_path, df):
     # show plot
     plt.show()
 
-    anomaly_types = "AnomalyTypesCluster"
+    anomaly_types = "AnomalyTypesLocal"
     noise_types = "NoiseTypesNone"
-    algoritm_type = "Supervised"
+    algoritm_type = "Semisupervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     img_file_name = f"{dn}_linechart_{algoritm_type}_{anomaly_types}_{noise_types}.png"
     img_name = os.path.join(diagram_folder_path, img_file_name)
@@ -189,8 +206,8 @@ def bar_chart(diagram_folder_path, df):
 
 
 def main():
-    folder_path = "./algorithm_evaluation_results/Supervised/"
-    diagram_folder_path = "./algorithm_evaluation_results/Diagrams/"
+    folder_path = "./algorithm_evaluation_results/Semisupervised/NoiseAndAnomalyTypes/"
+    diagram_folder_path = "./algorithm_evaluation_results/Diagrams/Semisupervised/"
     _, _, files = next(os.walk(folder_path))
     file_count = len(files)
     dataframes_list = []
@@ -201,9 +218,9 @@ def main():
 
     df_res = pd.concat(dataframes_list)
 
-    box_plot(diagram_folder_path, df_res)
+    # box_plot(diagram_folder_path, df_res)
     # line_chart(diagram_folder_path, df_res)
-    # bar_chart(diagram_folder_path, df_res)
+    bar_chart(diagram_folder_path, df_res)
 
     print(df_res)
 

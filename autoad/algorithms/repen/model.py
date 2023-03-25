@@ -211,10 +211,8 @@ class RepenModel:
             ind_scores = np.argsort(outlier_scores.flatten())
 
             # import pdb; pdb.set_trace()
-            inlier_ids, outlier_ids = ind_scores[
-                :-
-                self.known_outliers:],
-            ind_scores[-self.known_outliers:]
+            inlier_ids, outlier_ids = \
+                ind_scores[:-self.known_outliers], ind_scores[-self.known_outliers:]
 
             transforms = np.sum(
                 outlier_scores[inlier_ids]) - outlier_scores[inlier_ids]

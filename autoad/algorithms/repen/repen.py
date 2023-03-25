@@ -13,11 +13,11 @@ class REPEN(BaseDetector):
     def __init__(self,
                  seed: int = 42,
                  save_suffix='test',
-                 mode: str = 'supervised',
+                 mode: str = 'semi_supervised',
                  hidden_dim: int = 20,
                  batch_size: int = 256,
                  nb_batch: int = 50,
-                 n_epochs: int = 200):
+                 n_epochs: int = 50):
         self.device = self._get_device()  # get device
         self.seed = seed
 
