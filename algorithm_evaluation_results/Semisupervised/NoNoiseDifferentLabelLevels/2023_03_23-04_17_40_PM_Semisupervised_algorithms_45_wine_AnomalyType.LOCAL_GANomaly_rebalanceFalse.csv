@@ -1,0 +1,12 @@
+algorithm_name,dataset,anomaly_type,noise_type,labeled_anomaly_ratio,noise_ratio,apply_data_scaling,scaler,apply_data_rebalancing,rebalance_pipeline,apply_missing_data_filling,fill_algorithm,apply_dimensionality_reduction,dimensinality_reduction_algorithm,roc_auc,precision_n_scores,exception
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.0,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.46,0.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.1,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.2,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.54,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.3,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.4,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.54,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.5,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.6,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.7,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.8,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.58,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,0.9,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.58,1.0,
+GANomaly,45_wine,AnomalyType.LOCAL,NoiseType.NONE,1.0,0,True,"(MinMaxScaler(),)",False,"<bound method Pipeline.get_params of Pipeline(steps=[('u', RandomUnderSampler())])>",False,Zero,False,PCA,0.56,1.0,
