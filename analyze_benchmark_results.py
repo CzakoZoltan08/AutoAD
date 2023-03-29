@@ -27,13 +27,20 @@ import AutomaticAI.RandomForestAlgorithmFactory as rfaf
 import AutomaticAI.KnnAlgorithmFactory as kaf
 import AutomaticAI.RidgeClassifierAlgorithmFactory as rcaf
 import AutomaticAI.GradientBoostingClassifierAlgorithmFactory as gbcaf
-import AutomaticAI.XGBoostClassifierAlgorithmFactory as xgbcaf
 
 from autoad.algorithms.deep_sad.deepsad import DeepSAD
-from autoad.algorithms.feawad.feawad import FEAWAD
 from autoad.algorithms.ganomaly.ganomaly import GANomaly
 from autoad.algorithms.prenet.prenet import PReNet
-from autoad.algorithms.repen.repen import REPEN
+from autoad.algorithms.feawad.feawad import FEAWAD
+
+from autoad.algorithms.abod import AngleBaseOutlierDetection
+from autoad.algorithms.lmdd import LMDDAnomalyDetector
+from autoad.algorithms.lstmod import LSTMOutlierDetector
+from autoad.algorithms.mcd import MinimumCovarianceDeterminant
+from autoad.algorithms.ocsvm import OneClassSVM
+from autoad.algorithms.sod import SubspaceOutlierDetection
+from autoad.algorithms.sogaal import SingleObjectiveGenerativeAdversarialActiveLearning
+from autoad.algorithms.vae import VariationalAutoEncoder
 
 
 anomaly_detection_unsupervised_algorithms = [
@@ -68,20 +75,43 @@ semisupervised_algorithms = [
     DeepSAD(),
     # REPEN(),
     PReNet(),
-    # FEAWAD(),
+    FEAWAD(),
+]
+
+anomaly_detection_unsupervised_algorithms_no_opt = [
+    AngleBaseOutlierDetection(),  # test without hyperparameter optimization
+    # test without hyperparameter optimization
+    # MultiObjectiveGenerativeAdversarialActiveLearning(),
+    OneClassSVM(),  # test without hyperparameter optimization
+    SubspaceOutlierDetection(),  # test without hyperparameter optimization
+    # test without hyperparameter optimization
+    SingleObjectiveGenerativeAdversarialActiveLearning(),
+    VariationalAutoEncoder(),  # test without hyperparameter optimization
+    MinimumCovarianceDeterminant(),  # test without hyperparameter optimization
+    LMDDAnomalyDetector(),  # test without hyperparameter optimization
+    # LSTMOutlierDetector(),  # test without hyperparameter optimization
 ]
 
 
 def box_plot(diagram_folder_path, df):
     # algorithm_names = [
     #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+    # algorithm_names = [
+    #     name.algorithm_name for name in supervised_algorithms]
     algorithm_names = [
-        name.algorithm_name for name in supervised_algorithms]
+        algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
+
+    # algorithm_names_opt = [
+    #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+
+    # algorithm_names_no_opt = [
+    #     algorithm.__class__.__name__ for algorithm in anomaly_detection_unsupervised_algorithms_no_opt]
+
+    # algorithm_names = algorithm_names_opt + algorithm_names_no_opt
 
     roc_auc_list = []
     for algorithm_name in algorithm_names:
-        noise_df = df[df['noise_type']
-                      == 'NoiseType.LABEL_ERROR']
+        noise_df = df[df['noise_ratio'] == 0]
         # anomaly_type_df = noise_df[noise_df['anomaly_type']
         #                            == 'AnomalyType.CLUSTER']
         filtered_df = noise_df[noise_df['algorithm_name']
@@ -94,16 +124,16 @@ def box_plot(diagram_folder_path, df):
 
     ax = fig.add_subplot(111)
     ax.boxplot(roc_auc_list, patch_artist=True, vert=0)
-    ax.set_title('Supervised Algorithms')
+    ax.set_title('Semisupervised Algorithms')
     ax.set_yticklabels(algorithm_names)
-    ax.set_xlabel('ROC AUC')
+    ax.set_xlabel('ROCAUC')
 
     # show plot
     plt.show()
 
     anomaly_types = "AnomalyTypesAll"
-    noise_types = "NoiseTypesLabelErrors"
-    algoritm_type = "Supervised"
+    noise_types = "NoiseTypesNone"
+    algoritm_type = "Semisupervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     img_file_name = f"{dn}_{algoritm_type}_{anomaly_types}_{noise_types}.png"
     img_name = os.path.join(diagram_folder_path, img_file_name)
@@ -115,11 +145,19 @@ def line_chart(diagram_folder_path, df):
     #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
     # algorithm_names = [
     #     name.algorithm_name for name in supervised_algorithms]
-    algorithm_names = [
-        algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
+    # algorithm_names = [
+    #     algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
+
+    algorithm_names_opt = [
+        name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+
+    algorithm_names_no_opt = [
+        algorithm.__class__.__name__ for algorithm in anomaly_detection_unsupervised_algorithms_no_opt]
+
+    algorithm_names = algorithm_names_opt + algorithm_names_no_opt
 
     roc_auc_list = []
-    steps = [x / 100.0 for x in range(0, 60, 10)]
+    steps = [x / 100.0 for x in range(0, 100, 10)]
 
     fig = plt.figure(figsize=(20, 10))
     ax = plt.subplot(111)
@@ -128,7 +166,7 @@ def line_chart(diagram_folder_path, df):
         algorithm_df = df[df['algorithm_name']
                           == algorithm_name]
         noise_df = algorithm_df[algorithm_df['noise_type']
-                                == 'NoiseType.LABEL_ERROR']
+                                == 'NoiseType.IRRELEVANT_FEATURES']
         # anomaly_type_df = noise_df[noise_df['anomaly_type']
         #                            == 'AnomalyType.LOCAL']
         filtered_df = noise_df[noise_df['algorithm_name']
@@ -138,11 +176,12 @@ def line_chart(diagram_folder_path, df):
         roc_auc = mean_roc_by_datasets.values.tolist()
         roc_auc_list.append(roc_auc)
 
-        ax.plot(steps, roc_auc, label=algorithm_name)
+        ax.plot(steps, roc_auc[:len(steps)], label=algorithm_name)
 
     ax.set_xlabel('Label Ratio')
+    ax.set_title('Irrelevant Features')
     # Set the y axis label of the current axis.
-    ax.set_ylabel('ROC AUC Score')
+    ax.set_ylabel('ROCAUC Score')
 
     ax.set_xticks(steps)
 
@@ -152,8 +191,8 @@ def line_chart(diagram_folder_path, df):
     plt.show()
 
     anomaly_types = "AnomalyTypesAll"
-    noise_types = "NoiseTypesLabelError"
-    algoritm_type = "Semisupervised"
+    noise_types = "NoiseTypesIrrelevantFeatures"
+    algoritm_type = "Unsupervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     img_file_name = f"{dn}_linechart_{algoritm_type}_{anomaly_types}_{noise_types}.png"
     img_name = os.path.join(diagram_folder_path, img_file_name)
@@ -168,6 +207,14 @@ def bar_chart(diagram_folder_path, df):
     algorithm_names = [
         algorithm.__class__.__name__ for algorithm in semisupervised_algorithms]
 
+    # algorithm_names_opt = [
+    #     name.algorithm_name for name in anomaly_detection_unsupervised_algorithms]
+
+    # algorithm_names_no_opt = [
+    #     algorithm.__class__.__name__ for algorithm in anomaly_detection_unsupervised_algorithms_no_opt]
+
+    # algorithm_names = algorithm_names_opt + algorithm_names_no_opt
+
     roc_auc_list = []
 
     fig = plt.figure(figsize=(20, 10))
@@ -178,7 +225,7 @@ def bar_chart(diagram_folder_path, df):
                           == algorithm_name]
         noise_df = algorithm_df[algorithm_df['noise_ratio'] == 0]
         anomaly_type_df = noise_df[noise_df['anomaly_type']
-                                   == 'AnomalyType.LOCAL']
+                                   == 'AnomalyType.CLUSTER']
         filtered_df = anomaly_type_df[anomaly_type_df['algorithm_name']
                                       == algorithm_name]
         mean_roc = filtered_df['roc_auc'].mean()
@@ -187,16 +234,17 @@ def bar_chart(diagram_folder_path, df):
     ax.bar(algorithm_names, roc_auc_list)
 
     ax.set_xlabel('Algorithms')
+    ax.set_title('Cluster Anomalies')
     ax.set_xticklabels(algorithm_names, rotation=45, ha='right')
     # Set the y axis label of the current axis.
-    ax.set_ylabel('ROC AUC Score')
+    ax.set_ylabel('ROCAUC')
 
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
     # show plot
     plt.show()
 
-    anomaly_types = "AnomalyTypesLocal"
+    anomaly_types = "AnomalyTypesCluster"
     noise_types = "NoiseTypesNone"
     algoritm_type = "Semisupervised"
     dn = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
@@ -206,8 +254,8 @@ def bar_chart(diagram_folder_path, df):
 
 
 def main():
-    folder_path = "./algorithm_evaluation_results/Semisupervised/NoiseAndAnomalyTypes/"
-    diagram_folder_path = "./algorithm_evaluation_results/Diagrams/Semisupervised/"
+    folder_path = "./algorithm_evaluation_results/Unsupervised/"
+    diagram_folder_path = "./algorithm_evaluation_results/Diagrams/Unsupervised/"
     _, _, files = next(os.walk(folder_path))
     file_count = len(files)
     dataframes_list = []
@@ -218,9 +266,11 @@ def main():
 
     df_res = pd.concat(dataframes_list)
 
+    plt.rcParams['font.size'] = 24
+
     # box_plot(diagram_folder_path, df_res)
-    # line_chart(diagram_folder_path, df_res)
-    bar_chart(diagram_folder_path, df_res)
+    line_chart(diagram_folder_path, df_res)
+    # bar_chart(diagram_folder_path, df_res)
 
     print(df_res)
 
